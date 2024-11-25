@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from "../modal/modal.module.css";
 import { IoMdClose } from "react-icons/io";
 import { MdAddShoppingCart } from "react-icons/md";
 import { useCarrito } from "../../context/CarritoContext";
 import ModalLotes from './modalLotes/ModalLotes';
+import ModalNotas from './modalNotas/ModalNotas';
+
 
 export default function Modal({
   articuloCarrito,
@@ -14,6 +16,7 @@ export default function Modal({
   setLotesArticulos,
   cantidad, setCantidad, notas, setNotas, total, descuento, setDescuento, precioArticulo, setPrecioArticulo
 }) {
+
   const { apiURL } = useCarrito();
   const [lotes, setLotes] = useState([]);
   const [cantidadPorLote, setCantidadPorLote] = useState({});
@@ -22,6 +25,7 @@ export default function Modal({
   const [ejemplo, setEjemplo] = useState({ ejemplo1: true, ejemplo2: false, ejemplo3: false });
   const [loteSeleccionado, setLoteSeleccionado] = useState(null);
   const [lote, setLote] = useState("");
+  const inputRefs = useRef({});
 
 
   useEffect(() => {
@@ -92,6 +96,14 @@ export default function Modal({
     setMostrarModalLotes(false);
   };
 
+  // Función para dar foco al input
+  const handleDivClick = (loteClave) => {
+    // Da foco al input del lote correspondiente
+    if (inputRefs.current[loteClave]) {
+      inputRefs.current[loteClave].focus();
+    }
+  };
+
   return (
     <>
       <div className="overlay" />
@@ -105,20 +117,24 @@ export default function Modal({
             </p>
           </div>
 
+
           <div className={styles.div_modal}>
             <div className={styles.contenido}>
 
               <img className={styles.articulo_img} src={articuloCarrito.imagen} alt="" />
-
               {/*
                 <p className={styles.articulo_descripcion}>
                   {articuloCarrito.descripcion}
                 </p>
               */}
+
+
+              {/*TOTAL EN TIEMPO REAL DEL ARTICULO, DEPENDIENDO DE LA CANT, PRECIO Y DESCUENTO*/}
               <div className={styles.total}>
                 <h3>Total: $<span>{formatearCantidad(total)}</span></h3>
               </div>
 
+              {/*CAMPOS CANTIDAD, PRECIO, DESCUENTO*/}
               <div className={styles.div_campos}>
                 <div className={styles.div_cantidad}>
                   <label htmlFor="cantidad">Cantidad:</label>
@@ -154,52 +170,51 @@ export default function Modal({
                 </div>
               </div>
 
-              {lotes.length !== 0 && !esCantidadValida ? (
-                <p style={{ color: "red", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Debes seleccionar de los lotes la cantidad seleccionada: {cantidad}</p>
-              ) : (
-                <p style={{ color: "green", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Lotes seleccionados correctamente</p>
-              )}
+              {/*MENSAJE DE AVISO SI YA HAS SELECCIONADO LOTES, EN CASO DE TENERLOS*/}
               {
-                alertaModal && (
-                  <p className={styles.obligatorios}>{alertaModal}</p>
+                lotes.length !== 0 && (
+                  <>
+                    {lotes.length !== 0 && !esCantidadValida ? (
+                      <p style={{ color: "red", border: "solid 1px red", padding: ".3rem", borderRadius: ".3rem", lineHeight: ".9", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Debes seleccionar de los lotes la cantidad seleccionada: {cantidad}</p>
+                    ) : (
+                      <p style={{ color: "green", border: "solid 1px green", padding:".3rem", borderRadius: ".3rem", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Lotes seleccionados correctamente</p>
+                    )}
+                    {
+                      alertaModal && (
+                        <p className={styles.obligatorios}>{alertaModal}</p>
+                      )
+                    }
+                  </>
                 )
               }
+
             </div>
 
 
-            {/* Modal de lotes */}
-            {mostrarModalLotes && (
-              <>
-                <ModalLotes
-                  cantidad={cantidad}
-                  lotes={lotes}
-                  cantidadPorLote={cantidadPorLote}
-                  handleCantidadLoteChange={handleCantidadLoteChange}
-                  cerrarModalLotes={cerrarModalLotes}
-                />
-              </>
-            )}
-
-
+            {/*SECCION DE LOTES EN CUADRICULADO DE 3 COL*/}
             {
               ejemplo.ejemplo2 && (
                 <div className={`${ejemplo.ejemplo3 ? styles.lotes_div_flex : styles.lotes_div}`}>
                   {lotes.map((lote, index) => (
                     <div
                       key={index}
-                      onClick={() => changeLote(lote)}
-                      className={`${styles.lote} ${loteSeleccionado?.clave === lote.clave ? styles.selected : ''}`} // Aplica clase 'selected' si el lote es el seleccionado
+                      onClick={() => {
+                        changeLote(lote); // Cambia el lote seleccionado
+                        handleDivClick(lote.clave); // Da foco al input correspondiente
+                      }}
+                      className={`${styles.lote} ${loteSeleccionado?.clave === lote.clave ? styles.selected : ''}`}
                     >
                       <div className={ejemplo.ejemplo3 && styles.card_lotes}>
                         <div>
-                          <p>E: {lote.existencia}</p>
+                          <p><span>{formatearFecha(lote.fecha)}</span></p>
                         </div>
                         <div>
-                          <p><span>{formatearFecha(lote.fecha)}</span></p>
+                          <p>E: {lote.existencia}</p>
                         </div>
                         <div className={styles.lote_input}>
                           <label>C:</label>
                           <input
+                            ref={(el)=>inputRefs.current[lote.clave] = el}
                             type="number"
                             max={cantidad}
                             min={0}
@@ -215,9 +230,8 @@ export default function Modal({
               )
             }
 
-
+            {/*MODAL DE LOTES*/}
             <div className={styles.div_lotes_notas}>
-
               {
                 ejemplo.ejemplo1 && (
                   lotes.length > 0 && (
@@ -228,51 +242,46 @@ export default function Modal({
                   )
                 )
               }
-
-              <div className={styles.div_agregar_nota}>
+              <div div className={styles.div_agregar_nota}>
                 <p>(Opcional)</p>
                 <p onClick={() => setShowAgregarNotas(true)} className={styles.boton_modal}>Agregar Nota</p>
               </div>
             </div>
 
-            {
-              showAgregarNotas && (
-                <>
-                  <div className='overlay'></div>
-                  <div className={styles.modal_notas}>
-                    <div className={styles.div_notas}>
-                      <h5>Agrega una nota</h5>
-                      <div className={styles.div_nota}>
-                        <label htmlFor="notas">Notas:</label>
-                        <textarea
-                          id="notas"
-                          value={notas}
-                          onChange={(e) => setNotas(e.target.value)}
-                          placeholder='Escribe una nota aquí'
-                        />
-                      </div>
-                      <div className={styles.div_notas_guardadas}>
-                        <h5>Notas guardadas</h5>
-                        <div className={styles.notas_guardadas}>
-                          <p>asdasa</p>
-                          <p>sdasd asdas</p>
-                          <p>asda asda asdasd</p>
-                        </div>
-                      </div>
-                      <p onClick={() => setShowAgregarNotas(false)} className={styles.boton_modal}>Confirmar o cerrar</p>
-                    </div>
-                  </div>
-                </>
-              )
-            }
-
 
             <button type="submit" disabled={lotes.length !== 0 ? !esCantidadValida : false}>Agregar al Carrito <MdAddShoppingCart /></button>
           </div>
 
-        </form>
+        </form >
 
-      </div>
+
+        {/* Modal de lotes */}
+        {mostrarModalLotes && (
+          <>
+            <ModalLotes
+              cantidad={cantidad}
+              lotes={lotes}
+              cantidadPorLote={cantidadPorLote}
+              handleCantidadLoteChange={handleCantidadLoteChange}
+              cerrarModalLotes={cerrarModalLotes}
+            />
+          </>
+        )}
+        {/*MODAL AGREGAR NOTA*/}
+        {
+          showAgregarNotas && (
+            <>
+              <ModalNotas
+                notas={notas}
+                setNotas={setNotas}
+                setShowAgregarNotas={setShowAgregarNotas}
+              />
+            </>
+          )
+        }
+
+
+      </div >
     </>
   );
 }

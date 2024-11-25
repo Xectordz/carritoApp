@@ -62,7 +62,7 @@ export default function ModalLotes({
                             </div>
                         ))}
                     </div>
-                    <p onClick={cerrarModalLotes} className={styles.boton_modal}>Confirmar o cerrar</p>
+                    <button onClick={cerrarModalLotes}>Confirmar o cerrar</button>
                 </div>
             </div>
         </>

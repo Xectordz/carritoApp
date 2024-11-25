@@ -1,16 +1,18 @@
+.modal_lotes_content{
+    display: flex;
+    flex-direction: column;
+}
 .modal_lotes{
-    position: fixed;
-    z-index: 1010;
+    position:fixed;
+    z-index: 1001;
     background-color: white;
     padding: 1rem 2rem 2rem 2rem;
-    top: 5%;
-    left: 0;
-    right: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate( -50%, -50%);
     width: 95%;
     margin: 0 auto;
     border-radius: .5rem;
-    min-height: 40%;
-    max-height: 95%;
     overflow-y: scroll;
 }
 .lotes_div {
@@ -79,11 +81,4 @@
     font-size: 1rem;
     position: relative;
     cursor: pointer; /* Cambia el cursor al pasar sobre el texto */
-}
-.boton_modal{
-    background-color: rgb(13, 163, 13);
-    color: white;
-    padding: .2rem .5rem;
-    border-radius: .5rem;
-    text-align: center;
 }

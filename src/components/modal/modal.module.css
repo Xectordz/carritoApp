@@ -19,10 +19,10 @@
     position: relative;
 }
 .modal{
-    position: fixed; 
-    top: 5%;
-    left: 0;
-    right: 0;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 95%;
     max-width: 600px;
     max-height: 90%;
@@ -32,6 +32,7 @@
     background: white;
     z-index: 1000; 
     border-radius: 5px;
+    min-height: 50%;
 }
 .contenido{
     display: flex;
@@ -206,9 +207,9 @@
     position: fixed;
     z-index: 1001;
     background-color: white;
-    top: 5%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     padding: 1rem;
     width: 90%;
     border-radius: .5rem;
@@ -251,6 +252,9 @@
     place-items: center;
     margin: 1rem auto 1.5rem auto;
 }
+
+
+
 .div_lotes_notas div{
     display: flex;
     flex-direction: column;
