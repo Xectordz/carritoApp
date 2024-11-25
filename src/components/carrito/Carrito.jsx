@@ -27,32 +27,8 @@ export default function Carrito() {
   const [lotesArticulosEditados, setLotesArticulosEditados] = useState([]);
   const [lotesDisp, setLotesDisp] = useState([]);
   const [indexEditado, setIndexEditado] = useState("");
-  const [mensaje, setMensaje] = useState(false);
-  const [clienteOBJ, setClienteOBJ] = useState({})
+  const { carrito, setCarrito, cantidadCarrito, cliente, apiURL } = useCarrito();
 
-
-  const extraerCliente = () => {
-    const getCliente = async () => {
-      try {
-        const res = await fetch(`${apiURL}/get_catalogos_json/clientes`);
-        const data = await res.json();
-        if (res.ok) {
-          const clienteStorage = localStorage.getItem("cliente");
-          const clienteDecodificado = atob(clienteStorage);
-          const clienteEncontrado = data.find(cliente => cliente.clienteid === clienteDecodificado.cliente_id);
-          setClienteOBJ(clienteEncontrado);
-        } else {
-          console.log("Hubo un error al obtener cliente");
-        }
-      } catch (error) {
-        console.log("Hubo un problema con la solicitud de cliente");
-      }
-    }
-    getCliente();
-  }
-  useEffect(() => {
-    extraerCliente();
-  }, []);
 
   // Función que calcula el total con descuento
   const calcularTotalModal = (precioArticulo, cantidad, descuento, preciolista) => {
@@ -72,8 +48,6 @@ export default function Carrito() {
     }
   }, [articuloEditando, editarArticulo, cantidad, precio, descuento]);  // Recalcular cuando articuloEditando o editarArticulo cambien
 
-
-  const { carrito, setCarrito, cantidadCarrito, cliente, apiURL } = useCarrito();
 
 
   const fetchLotes = async () => {
@@ -373,13 +347,6 @@ export default function Carrito() {
     }
   };
 
-
-  // formatear la fecha que trae el lote
-  const formatearFecha = (fecha) => {
-    const fechaObj = new Date(fecha); // Convierte la fecha a un objeto Date
-    return fechaObj.toLocaleDateString('es-ES'); // Devuelve la fecha en formato 'dd/mm/yyyy'
-  };
-
   
   const formatearCantidad = (cantidad) => {
     return new Intl.NumberFormat('en-US', {
@@ -441,7 +408,7 @@ export default function Carrito() {
                       }
 
 
-
+                      {/*}
                       {
                         item.lotesArticulos.length === 0 && (
                           <div className={styles.div_agregar}>
@@ -450,6 +417,7 @@ export default function Carrito() {
                           </div>
                         )
                       }
+                      */}
 
 
 

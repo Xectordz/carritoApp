@@ -5,6 +5,7 @@ import { MdAddShoppingCart } from "react-icons/md";
 import { useCarrito } from "../../context/CarritoContext";
 import ModalLotes from './modalLotes/ModalLotes';
 import ModalNotas from './modalNotas/ModalNotas';
+import { FaSpinner } from "react-icons/fa6";
 
 
 export default function Modal({
@@ -26,12 +27,16 @@ export default function Modal({
   const [loteSeleccionado, setLoteSeleccionado] = useState(null);
   const [lote, setLote] = useState("");
   const inputRefs = useRef({});
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
     fetch(`${apiURL}/get_lotes_json/${articuloCarrito.articuloid}`)
       .then(res => res.json())
-      .then(data => setLotes(data));
+      .then(data => {
+        setLotes(data)
+        setLoading(false)
+      });
   }, [apiURL, articuloCarrito.articuloid]);
 
   const formatearFecha = (fecha) => {
@@ -116,141 +121,152 @@ export default function Modal({
               <IoMdClose />
             </p>
           </div>
-
-
-          <div className={styles.div_modal}>
-            <div className={styles.contenido}>
-
-              <img className={styles.articulo_img} src={articuloCarrito.imagen} alt="" />
-              {/*
-                <p className={styles.articulo_descripcion}>
-                  {articuloCarrito.descripcion}
-                </p>
-              */}
-
-
-              {/*TOTAL EN TIEMPO REAL DEL ARTICULO, DEPENDIENDO DE LA CANT, PRECIO Y DESCUENTO*/}
-              <div className={styles.total}>
-                <h3>Total: $<span>{formatearCantidad(total)}</span></h3>
+          {
+            loading ? (
+              <div className={styles.div_cargando}>
+                <p className={styles.cargando}><FaSpinner /></p>
               </div>
+            ) : (
+              <div className={styles.div_modal}>
+                <div className={styles.contenido}>
 
-              {/*CAMPOS CANTIDAD, PRECIO, DESCUENTO*/}
-              <div className={styles.div_campos}>
-                <div className={styles.div_cantidad}>
-                  <label htmlFor="cantidad">Cantidad:</label>
-                  <input
-                    type="text"
-                    id="cantidad"
-                    value={cantidad}
-                    onChange={(e) => setCantidad(e.target.value)}
-                    autoComplete="off"
-                  />
-                </div>
-
-                <div className={styles.div_precio}>
-                  <label htmlFor='precio' className={styles.precio}>Precio:</label>
-                  <input
-                    onChange={(e) => setPrecioArticulo(e.target.value)}
-                    id='precio'
-                    value={`${precioArticulo}`}
-                    type="text"
-                    autoComplete="off"
-                  />
-                </div>
-
-                <div className={styles.div_precio}>
-                  <label htmlFor='dcto'>Descuento:</label>
-                  <input
-                    id='dcto'
-                    onChange={(e) => setDescuento(e.target.value)}
-                    value={descuento}
-                    type="text"
-                    autoComplete="off"
-                  />
-                </div>
-              </div>
-
-              {/*MENSAJE DE AVISO SI YA HAS SELECCIONADO LOTES, EN CASO DE TENERLOS*/}
-              {
-                lotes.length !== 0 && (
-                  <>
-                    {lotes.length !== 0 && !esCantidadValida ? (
-                      <p style={{ color: "red", border: "solid 1px red", padding: ".3rem", borderRadius: ".3rem", lineHeight: ".9", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Debes seleccionar de los lotes la cantidad seleccionada: {cantidad}</p>
-                    ) : (
-                      <p style={{ color: "green", border: "solid 1px green", padding:".3rem", borderRadius: ".3rem", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Lotes seleccionados correctamente</p>
-                    )}
-                    {
-                      alertaModal && (
-                        <p className={styles.obligatorios}>{alertaModal}</p>
-                      )
-                    }
-                  </>
-                )
-              }
-
-            </div>
+                  <img className={styles.articulo_img} src={articuloCarrito.imagen} alt="" />
+                  {/*
+                    <p className={styles.articulo_descripcion}>
+                      {articuloCarrito.descripcion}
+                    </p>
+                  */}
 
 
-            {/*SECCION DE LOTES EN CUADRICULADO DE 3 COL*/}
-            {
-              ejemplo.ejemplo2 && (
-                <div className={`${ejemplo.ejemplo3 ? styles.lotes_div_flex : styles.lotes_div}`}>
-                  {lotes.map((lote, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        changeLote(lote); // Cambia el lote seleccionado
-                        handleDivClick(lote.clave); // Da foco al input correspondiente
-                      }}
-                      className={`${styles.lote} ${loteSeleccionado?.clave === lote.clave ? styles.selected : ''}`}
-                    >
-                      <div className={ejemplo.ejemplo3 && styles.card_lotes}>
-                        <div>
-                          <p><span>{formatearFecha(lote.fecha)}</span></p>
-                        </div>
-                        <div>
-                          <p>E: {lote.existencia}</p>
-                        </div>
-                        <div className={styles.lote_input}>
-                          <label>C:</label>
-                          <input
-                            ref={(el)=>inputRefs.current[lote.clave] = el}
-                            type="number"
-                            max={cantidad}
-                            min={0}
-                            value={cantidadPorLote[lote.clave] || 0}
-                            onChange={(e) => handleCantidadLoteChange(lote.nomalmacen, lote.artdiscretoid, lote.clave, Math.min(e.target.value, lote.existencia))}
-                          />
-                        </div>
-                      </div>
+                  {/*TOTAL EN TIEMPO REAL DEL ARTICULO, DEPENDIENDO DE LA CANT, PRECIO Y DESCUENTO*/}
+                  <div className={styles.total}>
+                    <h3>Total: $<span>{formatearCantidad(total)}</span></h3>
+                  </div>
 
+                  {/*CAMPOS CANTIDAD, PRECIO, DESCUENTO*/}
+                  <div className={styles.div_campos}>
+                    <div>
+                      <label htmlFor="cantidad">Cantidad:</label>
+                      {/*<fieldset>
+                        <p className={styles.sumar_button} onClick={()=> cantidad !== 1 && setCantidad(cantidad - 1)}>-</p>
+                    */}<input
+                          type="text"
+                          id="cantidad"
+                          min={1}
+                          value={cantidad}
+                          onChange={(e) => setCantidad(e.target.value)}
+                          autoComplete="off"
+                        />
+                      {/*<p className={styles.restar_button} onClick={()=>setCantidad(cantidad + 1)}>+</p>
+                      </fieldset>
+                      */}
                     </div>
-                  ))}
-                </div>
-              )
-            }
 
-            {/*MODAL DE LOTES*/}
-            <div className={styles.div_lotes_notas}>
-              {
-                ejemplo.ejemplo1 && (
-                  lotes.length > 0 && (
-                    <div className={styles.div_lotesDisponibles}>
-                      <p>Lotes Disponibles: {lotes.length}</p>
-                      <p className={styles.boton_modal} onClick={abrirModalLotes}>{"Seleccionar Lotes"}</p>
+                    <div className={styles.div_precio}>
+                      <label htmlFor='precio'>Precio:</label>
+                      <input
+                        onChange={(e) => setPrecioArticulo(e.target.value)}
+                        id='precio'
+                        value={`${precioArticulo}`}
+                        type="text"
+                        autoComplete="off"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor='dcto'>Descuento:</label>
+                      <input
+                        id='dcto'
+                        onChange={(e) => setDescuento(e.target.value)}
+                        value={descuento}
+                        type="text"
+                        autoComplete="off"
+                      />
+                    </div>
+                  </div>
+
+                  {/*MENSAJE DE AVISO SI YA HAS SELECCIONADO LOTES, EN CASO DE TENERLOS*/}
+                  {
+                    lotes.length !== 0 && (
+                      <>
+                        {lotes.length !== 0 && !esCantidadValida ? (
+                          <p style={{ color: "red", border: "solid 1px red", padding: ".3rem", borderRadius: ".3rem", lineHeight: ".9", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Debes seleccionar de los lotes la cantidad seleccionada: {cantidad}</p>
+                        ) : (
+                          <p style={{ color: "green", border: "solid 1px green", padding:".3rem", borderRadius: ".3rem", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Lotes seleccionados correctamente</p>
+                        )}
+                        {
+                          alertaModal && (
+                            <p className={styles.obligatorios}>{alertaModal}</p>
+                          )
+                        }
+                      </>
+                    )
+                  }
+
+                </div>
+
+
+                {/*SECCION DE LOTES EN CUADRICULADO DE 3 COL*/}
+                {
+                  ejemplo.ejemplo2 && (
+                    <div className={`${ejemplo.ejemplo3 ? styles.lotes_div_flex : styles.lotes_div}`}>
+                      {lotes.map((lote, index) => (
+                        <div
+                          key={index}
+                          onClick={() => {
+                            changeLote(lote); // Cambia el lote seleccionado
+                            handleDivClick(lote.clave); // Da foco al input correspondiente
+                          }}
+                          className={`${styles.lote} ${loteSeleccionado?.clave === lote.clave ? styles.selected : ''}`}
+                        >
+                          <div className={ejemplo.ejemplo3 && styles.card_lotes}>
+                            <div>
+                              <p><span style={{fontWeight: "bold"}}>{formatearFecha(lote.fecha)}</span></p>
+                            </div>
+                            <div>
+                              <p>Exist.: {lote.existencia}</p>
+                            </div>
+                            <div className={styles.lote_input}>
+                              <label>Cant.:</label>
+                              <input
+                                ref={(el)=>inputRefs.current[lote.clave] = el}
+                                type="number"
+                                max={cantidad}
+                                value={cantidadPorLote[lote.clave] || 0}
+                                onChange={(e) => handleCantidadLoteChange(lote.nomalmacen, lote.artdiscretoid, lote.clave, Math.min(e.target.value, lote.existencia))}
+                              />
+                            </div>
+                          </div>
+
+                        </div>
+                      ))}
                     </div>
                   )
-                )
-              }
-              <div div className={styles.div_agregar_nota}>
-                <p>(Opcional)</p>
-                <p onClick={() => setShowAgregarNotas(true)} className={styles.boton_modal}>Agregar Nota</p>
+                }
+
+                {/*MODAL DE LOTES*/}
+                <div className={`${styles.div_lotes_notas} ${ejemplo.ejemplo1 && lotes.length > 0 ? styles.div_lotes_notas : styles.col}`}>
+                  {
+                    ejemplo.ejemplo1 && (
+                      lotes.length > 0 && (
+                        <div className={styles.div_lotesDisponibles}>
+                          <p>Lotes Disponibles: {lotes.length}</p>
+                          <p className={styles.boton_modal} onClick={abrirModalLotes}>{"Seleccionar Lotes"}</p>
+                        </div>
+                      )
+                    )
+                  }
+                  <div div className={styles.div_agregar_nota}>
+                    <p>(Opcional)</p>
+                    <p onClick={() => setShowAgregarNotas(true)} className={styles.boton_modal}>Agregar Nota</p>
+                  </div>
+                </div>
+
+
+                <button type="submit" disabled={lotes.length !== 0 ? !esCantidadValida : false}>Agregar al Carrito <MdAddShoppingCart /></button>
               </div>
-            </div>
-
-
-            <button type="submit" disabled={lotes.length !== 0 ? !esCantidadValida : false}>Agregar al Carrito <MdAddShoppingCart /></button>
-          </div>
+          )
+        }
 
         </form >
 

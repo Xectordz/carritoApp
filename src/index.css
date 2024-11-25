@@ -60,7 +60,13 @@ h4{
     padding: 1rem;
     margin: 0;
 }
-
+.boton_modal{
+    background-color: rgb(105, 154, 245);
+    color: white;
+    padding: .2rem .7rem;
+    border-radius: 5rem;
+    text-align: center;
+}
 
 .boton-arriba{
     position: fixed;

@@ -18,6 +18,31 @@
 .container{
     position: relative;
 }
+.div_cargando{
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 1.2rem;
+}
+.cargando{
+    text-align: center;
+    font-size: 2rem;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 .modal{
     position: fixed;
     top: 50%;
@@ -32,7 +57,7 @@
     background: white;
     z-index: 1000; 
     border-radius: 5px;
-    min-height: 50%;
+    min-height: 300px;
 }
 .contenido{
     display: flex;
@@ -160,7 +185,24 @@
     border: none;
     border-bottom: solid 2px var(--color-principal);
 }
-
+.div_campos fieldset{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border: none;
+}
+.div_campos fieldset p{
+    background-color: var(--color-principal);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .3rem;
+    border-radius: 50%;
+    color: white;
+    width: 1.3rem;
+    height: 1.3rem;
+}
 .obligatorios{
     text-align: center;
     color: white;
@@ -247,9 +289,15 @@
 }
 .div_lotes_notas{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: .5rem;
     place-items: center;
+    margin: 1rem auto 1.5rem auto;
+}
+.div_lotes_notas.col{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .5rem;
     margin: 1rem auto 1.5rem auto;
 }
 
@@ -266,13 +314,7 @@
     border-radius: .5rem;
     width: 100%;
 }
-.boton_modal{
-    background-color: rgb(13, 163, 13);
-    color: white;
-    padding: .2rem .5rem;
-    border-radius: .5rem;
-    text-align: center;
-}
+
 
 
 
@@ -329,13 +371,6 @@
     width: 20px; /* Ancho del botón de opción */
     height: 20px; /* Alto del botón de opción */
     margin: 0;
-}
-.boton_modal{
-    background-color: rgb(13, 163, 13);
-    color: white;
-    padding: .2rem .5rem;
-    border-radius: .5rem;
-    text-align: center;
 }
 .card_lotes{
     display: flex;

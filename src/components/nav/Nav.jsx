@@ -100,7 +100,7 @@ export default function Nav({ activeComponent, setActiveComponent }) {
 
     const handleBusqueda = (e) => {
         e.preventDefault();
-        navigate(`/busqueda/results/${busquedaParam}`);
+        navigate(`/busqueda/${busquedaParam}`);
         setActiveComponent(null);
         setBusquedaParam("");
     };

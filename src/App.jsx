@@ -77,7 +77,7 @@ const Main = () => {
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/lineas" element={<Lineas />} />
         <Route path="/articulos" element={<Articulos />} />
-        <Route path="/busqueda/results/:searchTerm" element={<Busqueda />} />
+        <Route path="/busqueda/:searchTerm" element={<Articulos />} />
       </Routes>
 
     </>

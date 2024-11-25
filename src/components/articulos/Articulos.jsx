@@ -4,7 +4,6 @@ import styles from "../articulos/articulos.module.css";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 /*iconos de react icons*/
-import { MdAddShoppingCart } from "react-icons/md";
 import { BiLike } from "react-icons/bi";
 import { FaSpinner } from "react-icons/fa6";
 import { MdGridView } from "react-icons/md";
@@ -27,6 +26,7 @@ import pepino from "../../../public/pepino.jpg";
 
 /*Componente Articulos*/
 export default function Articulos() {
+  const { searchTerm } = useParams();
   const { lineaId } = useGrupoLinea();
   const { alerta, handleAgregar, view, setView, apiURL, setCarrito } = useCarrito(); // extraccion de variables o funciones reciclables del contecto carrito
   //const { lineaId } = useParams(); // extraccion del parametro pasado de la ruta anterior que contiene el id de la linea
@@ -54,30 +54,39 @@ export default function Articulos() {
   }, [cantidad, precioArticulo, descuento]);
 
 
-  /*funcion que realiza el fetch de los articulos
-    y filtra solo los que coinciden a la linea
-    seleccionada*/
   useEffect(() => {
     setLoading(true);
+  
     const fetchArticulos = async () => {
       try {
         const res = await fetch(`${apiURL}/get_catalogos_json/articulos`);
         const data = await res.json();
+  
         if (res.ok) {
-          const filteredArticulos = data.filter(articulo => String(articulo.lineaarticuloid) === String(lineaId));
-          setArticulos(filteredArticulos);
-        } else {
-          console.log("hubo un error al obtener los articulos");
+          // Si existe searchTerm, filtrar por él
+          if (searchTerm) {
+            const resultados = data.filter(articulo =>
+              articulo.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setArticulos(resultados);
+          } else {
+            // Si no hay searchTerm, filtrar solo por lineaId
+            const filteredArticulos = data.filter(
+              articulo => String(articulo.lineaarticuloid) === String(lineaId)
+            );
+            setArticulos(filteredArticulos);
+          }
         }
       } catch (error) {
-        console.log("hubo un problema en la solicitud de grupos", error);
+        console.log("Hubo un problema al obtener los artículos", error);
       } finally {
         setLoading(false);
       }
     }
+  
     fetchArticulos();
-  }, [lineaId]);
-
+  }, [lineaId, searchTerm, apiURL]); // Dependencias actualizadas para incluir searchTerm
+  
 
   // Manejar clics fuera del menú
   useEffect(() => {
@@ -217,20 +226,20 @@ export default function Articulos() {
   
 
   const cargarImagen = (articulo) => {
-    
     if(articulo.lineaarticuloid === 623 || articulo.lineaarticuloid === 1300){
       return cebolla;
-    }else if(articulo.lineaarticuloid === 627 || articulo.lineaarticuloid === 628 || articulo.lineaarticuloid === 629 || articulo.lineaarticuloid === 687 || articulo.lineaarticuloid === 5262){
+    }else if(articulo.lineaarticuloid === 627 || articulo.lineaarticuloid === 628 || articulo.lineaarticuloid === 629 || articulo.lineaarticuloid === 687 || articulo.lineaarticuloid === 5262 || articulo.nombre.includes("CHILE") || articulo.nombre.includes("chile")){
       return chile;
-    }else if(articulo.lineaarticuloid === 624 || articulo.lineaarticuloid === 625 || articulo.lineaarticuloid === 9306){
+    }else if(articulo.lineaarticuloid === 624 || articulo.lineaarticuloid === 625 || articulo.lineaarticuloid === 9306 || articulo.nombre.includes("TOMATE")){
       return tomate;
-    }else if(articulo.lineaarticuloid === 626){
+    }else if(articulo.lineaarticuloid === 626 || articulo.nombre.includes("LIMON")){
       return limon;
-    }else if(articulo.lineaarticuloid === 630){
+    }else if(articulo.lineaarticuloid === 630 || articulo.nombre.includes("PEPINO")){
       return pepino;
-    }else if(articulo.lineaarticuloid === 631){
+    }else if(articulo.lineaarticuloid === 631 || articulo.nombre.includes("ELOTE")){
       return elote;
-    }else{
+    }
+    else{
       return img;
     }
   }
@@ -269,7 +278,7 @@ console.log(lineaId);
         ) : (
 
           <>
-            <h3>Articulos</h3>
+            <h3>{searchTerm ? `Resultados de busqueda para: ${searchTerm}` : "Articulos"}</h3>
             <div className={`${"alerta"} ${alerta && "mostrar"}`}>
               Agregado <span><BiLike /></span>
             </div>
@@ -340,7 +349,7 @@ console.log(lineaId);
                     </div>
                   ))
                 ) : (
-                  <p className={styles.no_disponibles}>No hay artículos disponibles para esta línea.</p>
+                  <p className={styles.no_disponibles}>{searchTerm ? `No hay resultados para la busqueda: ${searchTerm}` : "No hay artículos disponibles para esta línea."}</p>
                 )
               }
             </div>

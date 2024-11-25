@@ -20,9 +20,9 @@ export default function ModalNotas({notas, setNotas, setShowAgregarNotas}) {
                     <div className={styles.div_notas_guardadas}>
                         <h5>Notas guardadas</h5>
                         <div className={styles.notas_guardadas}>
-                            <p>asdasa</p>
-                            <p>sdasd asdas</p>
-                            <p>asda asda asdasd</p>
+                            <p onClick={(e)=>setNotas(e.target.textContent)}>asdasa</p>
+                            <p onClick={(e)=>setNotas(e.target.textContent)}>sdasd asdas</p>
+                            <p onClick={(e)=>setNotas(e.target.textContent)}>asda asda asdasd</p>
                         </div>
                     </div>
                     <button onClick={() => setShowAgregarNotas(false)}>Confirmar o cerrar</button>
