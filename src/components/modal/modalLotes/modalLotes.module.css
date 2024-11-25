@@ -16,22 +16,14 @@
 .lotes_div {
     display: flex;
     flex-direction: column;
-<<<<<<< HEAD
     gap: .5rem; /* Espacio entre cada lote */
-=======
-    gap: 1rem; /* Espacio entre cada lote */
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
     max-width: 40rem;
     margin-bottom: 2rem;
 }
 
 .lote {
     border: solid 2px rgb(207, 207, 207);
-<<<<<<< HEAD
     padding: .2rem 1rem;
-=======
-    padding: .5rem 1rem;
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
     border-radius: .5rem;
     display: flex;
     flex-direction: column;
@@ -58,20 +50,13 @@
 }
 .lote_input input{
     width: 4rem;
-<<<<<<< HEAD
-=======
-    height: 2.5rem;
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
     font-size: 1rem;
     border: none;
     text-align: center;
     border-bottom: solid 1.5px gray;
     border-radius: 0;
-<<<<<<< HEAD
     margin: 0;
     padding: 0;
-=======
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 }
 .lote_input input:focus{
     border: none;
@@ -95,7 +80,6 @@
     position: relative;
     cursor: pointer; /* Cambia el cursor al pasar sobre el texto */
 }
-<<<<<<< HEAD
 .boton_modal{
     background-color: rgb(13, 163, 13);
     color: white;
@@ -103,17 +87,3 @@
     border-radius: .5rem;
     text-align: center;
 }
-=======
-.guardar_lotes {
-    bottom: 1rem;
-    left: 50%;
-    position: absolute;
-    background-color: rgb(70, 145, 206);
-    color: white;
-    padding: .4rem 1rem;
-    border-radius: 2rem;
-    cursor: pointer;
-    width: max-content;
-    transform: translateX(-50%); /* Esto lo centra horizontalmente */
-}
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2

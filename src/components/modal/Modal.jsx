@@ -14,22 +14,14 @@ export default function Modal({
   setLotesArticulos,
   cantidad, setCantidad, notas, setNotas, total, descuento, setDescuento, precioArticulo, setPrecioArticulo
 }) {
-<<<<<<< HEAD
-
-=======
-  
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
   const { apiURL } = useCarrito();
   const [lotes, setLotes] = useState([]);
   const [cantidadPorLote, setCantidadPorLote] = useState({});
   const [mostrarModalLotes, setMostrarModalLotes] = useState(false);
-<<<<<<< HEAD
   const [showAgregarNotas, setShowAgregarNotas] = useState(false);
   const [ejemplo, setEjemplo] = useState({ ejemplo1: true, ejemplo2: false, ejemplo3: false });
   const [loteSeleccionado, setLoteSeleccionado] = useState(null);
   const [lote, setLote] = useState("");
-=======
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
 
   useEffect(() => {
@@ -38,7 +30,6 @@ export default function Modal({
       .then(data => setLotes(data));
   }, [apiURL, articuloCarrito.articuloid]);
 
-<<<<<<< HEAD
   const formatearFecha = (fecha) => {
     const fechaObj = new Date(fecha); // Convierte la fecha a un objeto Date
     return fechaObj.toLocaleDateString('es-ES'); // Devuelve la fecha en formato 'dd/mm/yyyy'
@@ -49,9 +40,6 @@ export default function Modal({
     setLote(lote);              // Cambia el lote activo
   };
 
-=======
-  
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
   const handleCantidadLoteChange = (nomalmacen, artdiscretoid, loteClave, value) => {
     const lote = lotes.find(l => l.clave === loteClave);
@@ -85,11 +73,6 @@ export default function Modal({
 
   const esCantidadValida = calcularTotalCantidadSeleccionada() === Number(cantidad);
 
-<<<<<<< HEAD
-
-=======
-  
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
   const formatearCantidad = (cantidad) => {
     return new Intl.NumberFormat('en-US', {
@@ -123,7 +106,6 @@ export default function Modal({
           </div>
 
           <div className={styles.div_modal}>
-<<<<<<< HEAD
             <div className={styles.contenido}>
 
               <img className={styles.articulo_img} src={articuloCarrito.imagen} alt="" />
@@ -136,14 +118,6 @@ export default function Modal({
               <div className={styles.total}>
                 <h3>Total: $<span>{formatearCantidad(total)}</span></h3>
               </div>
-=======
-            <div className={styles.campos}>
-
-              <img className={styles.articulo_img} src={articuloCarrito.imagen} alt="" />
-              <p className={styles.articulo_descripcion}>
-                {articuloCarrito.descripcion}
-              </p>
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
               <div className={styles.div_campos}>
                 <div className={styles.div_cantidad}>
@@ -179,15 +153,12 @@ export default function Modal({
                   />
                 </div>
               </div>
-<<<<<<< HEAD
 
               {lotes.length !== 0 && !esCantidadValida ? (
                 <p style={{ color: "red", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Debes seleccionar de los lotes la cantidad seleccionada: {cantidad}</p>
               ) : (
                 <p style={{ color: "green", textAlign: "center", fontWeight: "bold", maxWidth: "350px", margin: "0 auto" }}>Lotes seleccionados correctamente</p>
               )}
-=======
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
               {
                 alertaModal && (
                   <p className={styles.obligatorios}>{alertaModal}</p>
@@ -195,19 +166,6 @@ export default function Modal({
               }
             </div>
 
-<<<<<<< HEAD
-
-=======
-            {/* Botón para abrir el modal de lotes */}
-            {
-              lotes.length > 0 && (
-                <div className={styles.div_lotesDisponibles}>
-                  <p>Lotes Disponibles: {lotes.length}</p>
-                  <p className={styles.seleccionar_lote} onClick={abrirModalLotes}>{"Seleccionar Lotes"}</p>
-                </div>
-              )
-            }
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
             {/* Modal de lotes */}
             {mostrarModalLotes && (
@@ -223,7 +181,6 @@ export default function Modal({
             )}
 
 
-<<<<<<< HEAD
             {
               ejemplo.ejemplo2 && (
                 <div className={`${ejemplo.ejemplo3 ? styles.lotes_div_flex : styles.lotes_div}`}>
@@ -309,25 +266,6 @@ export default function Modal({
               )
             }
 
-=======
-
-            <div className={styles.campos}>
-              <label htmlFor="notas">Notas:</label>
-              <textarea
-                id="notas"
-                value={notas}
-                onChange={(e) => setNotas(e.target.value)}
-                placeholder='Escribe una nota aquí'
-              />
-            </div>
-
-            <div className={styles.total}>
-              <h3>Total: $<span>{formatearCantidad(total)}</span></h3>
-              {lotes.length !== 0 && !esCantidadValida && (
-                <p style={{ color: "red", textAlign: "center" }}>La cantidad total no coincide con la suma de las cantidades por lote.</p>
-              )}
-            </div>
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
             <button type="submit" disabled={lotes.length !== 0 ? !esCantidadValida : false}>Agregar al Carrito <MdAddShoppingCart /></button>
           </div>

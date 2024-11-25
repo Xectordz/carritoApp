@@ -33,14 +33,11 @@
     z-index: 1000; 
     border-radius: 5px;
 }
-<<<<<<< HEAD
 .contenido{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-=======
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 .div_modal{
     padding: 20px;
     padding-top: 0;
@@ -135,7 +132,6 @@
 .div_campos{
     position: relative;
     display: flex;
-<<<<<<< HEAD
     justify-content: space-between;
     gap: 1rem;
     text-align: center;
@@ -150,18 +146,6 @@
 }
 .div_campos div input{
     height: 1.7rem;
-=======
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.div_precio{
-    display: flex;
-    flex-direction: column;
-}
-.div_precio input{
-    height: 3rem;
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
     width: 5rem;
     border: none;
     background-color: white;
@@ -169,7 +153,6 @@
     text-align: center;
     border-radius: 0;
     border-bottom: solid 1.5px gray;
-<<<<<<< HEAD
     font-size: 1.2rem;
 }
 .div_campos div input:focus{
@@ -177,40 +160,6 @@
     border-bottom: solid 2px var(--color-principal);
 }
 
-=======
-}
-.div_precio input:focus{
-    border: none;
-    border-bottom: solid 2px var(--color-principal);
-}
-.div_cantidad{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-}
-.div_cantidad input{
-    height: 3rem;
-    width: 5rem;
-    border: none;
-    background-color: white;
-    filter: brightness(1);
-    text-align: center;
-    border-radius: 0;
-    border-bottom: solid 1.5px gray;
-}
-.div_cantidad input:focus{
-    border: none;
-    border-bottom: solid 2px var(--color-principal);
-}
-.div_cantidad div{
-    display: flex;
-    justify-content: center;
-    gap: .3rem;
-    position: absolute;
-    bottom: -1.5rem;
-    left: -1rem;
-}
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 .obligatorios{
     text-align: center;
     color: white;
@@ -223,21 +172,12 @@
     color: var(--color-principal);
     filter: brightness(.4);
     font-weight: bold;
-<<<<<<< HEAD
     display: flex;
     flex-direction: column;
 }
 .total h3{
     margin: .5rem auto;
     padding: 0;
-=======
-}
-.div_lotesDisponibles{
-    margin: 1rem auto 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 }
 .seleccionar_lote{
     background-color: rgb(70, 145, 206);
@@ -262,7 +202,6 @@
     font-weight: bold;
 }
 
-<<<<<<< HEAD
 .modal_notas{
     position: fixed;
     z-index: 1001;
@@ -399,8 +338,6 @@
     justify-content: space-between;
     width: 100%;
 }
-=======
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
 
 

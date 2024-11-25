@@ -8,10 +8,7 @@ import { jsPDF } from "jspdf";
 import img from "../../../public/tv.jpg";
 import { useCarrito } from "../../context/CarritoContext"
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import Modal from '../modal/Modal';
-=======
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
 export default function Carrito() {
   const [alerta, setAlerta] = useState(false);
@@ -261,127 +258,6 @@ export default function Carrito() {
     localStorage.removeItem("carrito");
     navigate("/");
   }
-<<<<<<< HEAD
-
-=======
-  /*
-  const handleComprar = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(24);
-    doc.text("ESPIRAL SISTEMAS", 105, 20, { align: "center" });
-    doc.setFontSize(12);
-    doc.text(`Cliente: ${cliente.cliente}`, 105, 30, { align: "center" });
-    doc.setFontSize(18);
-    doc.text("Ticket de venta", 105, 40, { align: "center" });
-    doc.setFontSize(12);
-    
-    const fecha = new Date().toLocaleDateString();
-    const ahora = new Date();
-    const horas = ahora.getHours();
-    const minutos = ahora.getMinutes();
-    const segundos = ahora.getSeconds();
-    
-    const formatearHora = (h, m, s) => {
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    };
-    doc.text(`Observaciones: ${cliente.obs}`, 20, 55);
-    doc.text(`Fecha de venta: ${fecha} - ${formatearHora(horas, minutos, segundos)}`, 20, 60);
-    doc.setFontSize(12);
-    doc.text("Folio: ", 20, 65);
-    
-    let yOffset = 80; // Offset para la posición Y de los artículos
-    doc.setFontSize(14);
-    const imgData = img; // Imagen en base64
-
-    carrito.forEach((item, index) => {
-        const totalArticulo = (item.precioArticulo * item.cantidad) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
-        doc.addImage(imgData, 'JPEG', 20, yOffset - 10, 15, 15);
-        doc.text(`${item.Nombre}`, 45, yOffset - 5);
-        doc.text(`Cant. ${item.cantidad} - $${item.precioArticulo} - Descuento: ${item.descuento}%`, 20, yOffset + 10);
-        doc.text(`Total: $${totalArticulo.toFixed(2)}`, 20, yOffset + 15);
-        doc.text(`Notas: ${item.notas}`, 20, yOffset + 20);
-        doc.text("------------------------", 20, yOffset + 25);
-        
-        // Aumentar el offset para el siguiente artículo
-        yOffset += 40;
-
-        // Comprobar si se ha llegado al final de la página
-        if (yOffset > 250) { // 250 es un ejemplo, puedes ajustar según sea necesario
-            doc.addPage(); // Añadir una nueva página
-            yOffset = 20; // Reiniciar el offset para la nueva página
-        }
-    });
-
-    const totalCompra = calcularTotal();
-    doc.setFontSize(16);
-    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset);
-    
-    setPreviewUrl(doc.output('bloburl')); // Retorna la URL para la previsualización
-    console.log(carrito);
-  };
-  */
-console.log(carrito);
-
-
-
-  const descargarPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(24);
-    doc.text("ESPIRAL SISTEMAS", 105, 20, { align: "center" });
-    doc.setFontSize(12);
-    doc.text(`Cliente: ${cliente.cliente}`, 105, 30, { align: "center" });
-    doc.setFontSize(18);
-    doc.text("Ticket de venta", 105, 40, { align: "center" });
-    doc.setFontSize(12);
-
-    const fecha = new Date().toLocaleDateString();
-    const ahora = new Date();
-    const horas = ahora.getHours();
-    const minutos = ahora.getMinutes();
-    const segundos = ahora.getSeconds();
-
-    const formatearHora = (h, m, s) => {
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    };
-
-    doc.text(`Observaciones: ${cliente.obs}`, 20, 55);
-    doc.text(`Fecha de venta: ${fecha} - ${formatearHora(horas, minutos, segundos)}`, 20, 60);
-    doc.setFontSize(12);
-    doc.text("Folio: ", 20, 65);
-
-    let yOffset = 80; // Offset para la posición Y de los artículos
-    doc.setFontSize(14);
-    const imgData = img; // Imagen en base64
-
-    carrito.forEach((item, index) => {
-      const totalArticulo = (item.precioArticulo * item.cantidad) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
-      doc.addImage(imgData, 'JPEG', 20, yOffset - 10, 15, 15);
-      doc.text(`${item.Nombre}`, 45, yOffset - 5);
-      doc.text(`Cant. ${item.cantidad} - $${item.precioArticulo} - Descuento: ${item.descuento}%`, 20, yOffset + 10);
-      doc.text(`Total: $${totalArticulo.toFixed(2)}`, 20, yOffset + 15);
-      doc.text(`Notas: ${item.notas}`, 20, yOffset + 20);
-      doc.text("------------------------", 20, yOffset + 25);
-
-      // Aumentar el offset para el siguiente artículo
-      yOffset += 40;
-
-      // Comprobar si se ha llegado al final de la página
-      if (yOffset > 250) { // 250 es un ejemplo, puedes ajustar según sea necesario
-        doc.addPage(); // Añadir una nueva página
-        yOffset = 20; // Reiniciar el offset para la nueva página
-      }
-    });
-
-    const totalCompra = calcularTotal();
-    doc.setFontSize(16);
-    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset);
-
-    doc.save("ticket_compra.pdf");
-
-    setCarrito([]);
-    setPreviewUrl("");
-  };
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
 
 
   const recuperarCarrito = () => {
@@ -421,11 +297,7 @@ console.log(carrito);
     const sumaLotes = lotesArticulosEditados.reduce((total, lote) => total + lote.cantidadLote, 0);
 
     // Verificar si la suma de las cantidades de los lotes no sobrepasa la cantidad total
-<<<<<<< HEAD
     if(articuloEditando.lotesArticulos.length !== 0 && sumaLotes !== Number(cantidad)) {
-=======
-    if(articuloEditando.lotesArticulos.length !== 0 && sumaLotes !== cantidad) {
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
       // Si la suma es mayor a la cantidad total, mostrar un mensaje de error
       alert('La suma de las cantidades de los lotes no puede ser diferente a la cantidad total del artículo.');
       setLotesArticulosEditados([]);
@@ -611,7 +483,6 @@ console.log(carrito);
                   {/* MODAL EDITAR ARTICULO */}
                   {editarArticulo && articuloEditando.articuloid === item.articuloid && (
                     <>
-<<<<<<< HEAD
                       <Modal
                         articuloCarrito={articuloEditando}
                         handleSubmit={handleGuardarArticulo}
@@ -627,100 +498,6 @@ console.log(carrito);
                         setLotesArticulos={setLotesArticulosEditados}
                         total={total}
                       />
-=======
-                      <div className="overlay" />
-                      <form className={styles.modal} onSubmit={(e) => handleGuardarArticulo(e, item)}>
-
-                        <div className={styles.articulo_nombreModal}>
-                          <h5>{item.nombre}</h5>
-                          <p onClick={() => setEditarArticulo(false)} className={styles.btn_cerrar}><IoMdClose /></p>
-                        </div>
-
-                        <div className={styles.div_modal}>
-                          <div className={styles.campos}>
-                            <img className={styles.articulo_img} src={item.imagen} alt="" />
-                            <p className={styles.articulo_descripcion}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi doloremque accusantium at architecto optio nam quam velit voluptas facere veritatis, odit ad odio reiciendis eligendi libero animi. Fugiat, soluta a?</p>
-                            <div className={styles.div_camposModal}>
-                              <div className={styles.div_cantidad}>
-                                <label htmlFor="">Cantidad:</label>
-                                <input
-                                  type="number"
-                                  id="cantidad"
-                                  value={cantidad}
-                                  min="1"
-                                  onChange={(e) => setCantidad(Number(e.target.value))}
-                                />
-                                {/*
-
-                                    <div>
-                                      <p onClick={()=>setCantidad(cantidad + 1)}>+</p>
-                                      <p onClick={()=> cantidad <= 1 ? "" : setCantidad(cantidad - 1)}>-</p>
-                                    </div>
-
-                                  */}
-                              </div>
-                              <div className={styles.div_precioModal}>
-                                <label className={styles.precio}>Precio: </label>
-                                <input onChange={(e) => setPrecio(e.target.value)} value={precio} type="number" />
-                              </div>
-                              <div className={styles.div_precioModal}>
-                                <label>Descuento: </label>
-                                <input onChange={(e) => setDescuento(e.target.value)} value={descuento} type="number" />
-                              </div>
-                            </div>
-                          </div>
-                          <div className={styles.lotes_div}>
-                            {
-                              lotes.length !== 0 && (
-                                lotes.map((lote, index) => (
-                                  <div
-                                    key={index}
-                                    className={`${styles.lote} ${loteSeleccionado?.clave === lote.clave ? styles.selected : ''}`} // Aplica clase 'selected' si el lote es el seleccionado
-                                  >
-                                    <div className={styles.lote_row}>
-                                      <div className={styles.lote_radio}>
-                                        <label htmlFor={lote.nombre}>{lote.nomalmacen}</label>
-                                      </div>
-                                      <div className={styles.disponibles}>
-                                        <p>Disponibles: <span>{lote.existencia}</span></p>
-                                      </div>
-                                    </div>
-
-                                    <div className={styles.lote_row}>
-                                      <p>Fecha: <span>{formatearFecha(lote.fecha)}</span></p>
-                                    </div>
-                                    <div className={styles.lote_input}>
-                                      <label>Cantidad de este lote:</label>
-                                      <input
-                                        type="number"
-                                        max={cantidad}
-                                        min={0}
-                                        value={cantidadPorLote[lote.clave] || 0}
-                                        onChange={(e) => handleCantidadLoteChange(lote.nomalmacen, lote.artdiscretoid, lote.clave, Math.min(e.target.value, lote.existencia))}
-                                      />
-                                    </div>
-                                  </div>
-                                ))
-                              )
-                            }
-                          </div>
-                          <div className={styles.campos}>
-                            <label htmlFor="notas">Notas:</label>
-                            <textarea
-                              id="notas"
-                              value={nota}
-                              onChange={(e) => setNota(e.target.value)}
-                            />
-                          </div>
-                          <div className={styles.total}>
-                            <h3>Total: $<span>{total}</span></h3>
-                          </div>
-
-                          <button type="submit">Guardar</button>
-                        </div>
-
-                      </form>
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
                     </>
                   )}
                 </div>

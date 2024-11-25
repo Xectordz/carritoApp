@@ -38,11 +38,7 @@ export default function ModalLotes({
                             >
                                 <div className={styles.lote_row}>
                                     <div className={styles.lote_radio}>
-<<<<<<< HEAD
                                         <label htmlFor={lote.nombre}>{lote.clave}</label>
-=======
-                                        <label htmlFor={lote.nombre}>{lote.nomalmacen}</label>
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
                                     </div>
                                     <div className={styles.disponibles}>
                                         <p><span>{lote.existencia}</span></p>
@@ -66,11 +62,7 @@ export default function ModalLotes({
                             </div>
                         ))}
                     </div>
-<<<<<<< HEAD
                     <p onClick={cerrarModalLotes} className={styles.boton_modal}>Confirmar o cerrar</p>
-=======
-                    <p onClick={cerrarModalLotes} className={styles.guardar_lotes}>Confirmar o cerrar</p>
->>>>>>> 2d5730141381f0223ade9a533e914ecee09363f2
                 </div>
             </div>
         </>
