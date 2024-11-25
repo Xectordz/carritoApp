@@ -1,0 +1,73 @@
+@import url(../../index.css);
+.titulo_grupos{
+    padding-bottom: 3rem;
+}
+.container{
+    background-color: var(--color-gris);
+    padding-top: 5rem;
+    min-height: 100vh;
+    height: auto;
+}
+.div_cliente{
+    font-size: .9rem;
+    padding-left: .5rem;
+    margin: 0 auto;
+    border: solid 1px rgb(202, 202, 202);
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: .3rem;
+    background-color: white;
+}
+.div_cliente span{
+    font-weight: bold;
+}
+.div_cliente p:last-child{
+    cursor: pointer;
+    text-decoration: underline;display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    transition: all .3s;
+}
+.cambiar_cliente{
+    background-color: var(--color-gris);
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    gap: .3rem;
+}
+.cambiar_cliente:hover{
+    background-color: white;
+    filter: brightness(.9);
+    cursor: pointer;
+}
+
+
+.div_cargando{
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: 3rem auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 1.2rem;
+}
+.cargando{
+    text-align: center;
+    font-size: 2rem;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
