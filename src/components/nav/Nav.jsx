@@ -145,8 +145,8 @@ export default function Nav({ activeComponent, setActiveComponent }) {
                         }
                     </p>
                     <p title={isCarritoActive ? "Cerrar Carrito" : "Ver carrito"} onClick={toggleCarrito} className={`${styles.carrito} ${isCarritoActive && styles.active}`}>
-                        {isCarritoActive ? <IoMdClose /> : <IoCartOutline />}
-                        {!isCarritoActive && <span>{cantidadCarrito}</span>}
+                        <IoCartOutline />
+                        {<span>{cantidadCarrito}</span>}
                     </p>
                 </div>
             </nav>

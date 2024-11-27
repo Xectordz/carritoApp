@@ -159,6 +159,8 @@
     align-items: center;
     position: relative;
     gap: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
 }
 .div_busca input{
     width: 70%;

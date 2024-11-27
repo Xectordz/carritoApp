@@ -57,7 +57,6 @@ export default function Lineas() {
     navigate(`/articulos`);
   };
 
-  console.log(grupoId);
   
   const cargarImagen = (linea) => {
     if(linea.Grupo_Linea_Id === 614){

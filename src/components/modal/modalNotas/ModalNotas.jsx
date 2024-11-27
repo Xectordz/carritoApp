@@ -6,8 +6,8 @@ export default function ModalNotas({notas, setNotas, setShowAgregarNotas}) {
         <>
             <div className='overlay'></div>
             <div className={styles.modal_notas}>
+            <h5 style={{padding: ".5rem"}} className={styles.titulo}>Agrega una nota</h5>
                 <div className={styles.div_notas}>
-                    <h5>Agrega una nota</h5>
                     <div className={styles.div_nota}>
                         <label htmlFor="notas">Notas:</label>
                         <textarea
@@ -20,9 +20,9 @@ export default function ModalNotas({notas, setNotas, setShowAgregarNotas}) {
                     <div className={styles.div_notas_guardadas}>
                         <h5>Notas guardadas</h5>
                         <div className={styles.notas_guardadas}>
-                            <p onClick={(e)=>setNotas(e.target.textContent)}>asdasa</p>
-                            <p onClick={(e)=>setNotas(e.target.textContent)}>sdasd asdas</p>
-                            <p onClick={(e)=>setNotas(e.target.textContent)}>asda asda asdasd</p>
+                            <p onClick={(e)=>setNotas(e.target.textContent)}>Facturar</p>
+                            <p onClick={(e)=>setNotas(e.target.textContent)}>Imprimir pdf</p>
+                            <p onClick={(e)=>setNotas(e.target.textContent)}>Enviar por correo</p>
                         </div>
                     </div>
                     <button onClick={() => setShowAgregarNotas(false)}>Confirmar o cerrar</button>

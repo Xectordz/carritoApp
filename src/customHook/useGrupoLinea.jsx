@@ -13,6 +13,8 @@ export default function useGrupoLinea() {
         return storedId ? JSON.parse(atob(storedId)) : null; // Decodificar Base64 y luego parsear
     });
 
+    const [lastRoute, setLastRoute] = useState("");
+
     // Guardar grupoId en localStorage codificado en Base64
     useEffect(() => {
         if (grupoId !== null) {
@@ -33,7 +35,9 @@ export default function useGrupoLinea() {
         grupoId,
         setGrupoId,
         lineaId,
-        setLineaId
+        setLineaId,
+        lastRoute,
+        setLastRoute
     };
 }
 

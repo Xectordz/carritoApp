@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from "../articulos/articulos.module.css";
 /*hooks de react router*/
-import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 /*iconos de react icons*/
 import { BiLike } from "react-icons/bi";
@@ -36,14 +35,15 @@ export default function Articulos() {
   const [modal, setModal] = useState(false); // variable mara activar o desactivar el modal
   const [alertaModal, setAlertaModal] = useState(null);//variable para activar o desactivar alerta de modal
   const [ordenarPor, setOrdenarPor] = useState(false); //variable para activar o desactivar las opciones de ordenar articulos
-  const navigate = useNavigate();
   const [lotesArticulos, setLotesArticulos] = useState([]);
   const ordenarRef = useRef(null);
   const [cantidad, setCantidad] = useState(1);
   const [notas, setNotas] = useState("");
-  const [precioArticulo, setPrecioArticulo] = useState(10);
+  const [precioArticulo, setPrecioArticulo] = useState("");
   const [descuento, setDescuento] = useState(0);
   const [total, setTotal] = useState(0);
+
+  const [mostrarPrecio, setMostrarPrecio] = useState(false);
 
 
   /*funcion que calcula el precio de
@@ -56,12 +56,12 @@ export default function Articulos() {
 
   useEffect(() => {
     setLoading(true);
-  
+
     const fetchArticulos = async () => {
       try {
         const res = await fetch(`${apiURL}/get_catalogos_json/articulos`);
         const data = await res.json();
-  
+
         if (res.ok) {
           // Si existe searchTerm, filtrar por él
           if (searchTerm) {
@@ -83,10 +83,10 @@ export default function Articulos() {
         setLoading(false);
       }
     }
-  
+
     fetchArticulos();
   }, [lineaId, searchTerm, apiURL]); // Dependencias actualizadas para incluir searchTerm
-  
+
 
   // Manejar clics fuera del menú
   useEffect(() => {
@@ -122,25 +122,26 @@ export default function Articulos() {
     el modal del articulo*/
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (cantidad <= 0) {
+    const cantidadIsEmty = cantidad === "";
+    if (cantidad <= 0 && cantidadIsEmty) {
       setAlertaModal("Cantidad no puede ir vacío");
       setTimeout(() => {
         setAlertaModal(null);
       }, 2000);
       return;
-    }else if(precioArticulo === "" || precioArticulo < 1){
+    } else if (precioArticulo === "" || precioArticulo < 1) {
       setAlertaModal("Precio no puede ir vacío");
       setTimeout(() => {
         setAlertaModal(null);
       }, 2000);
       return;
-    }else if(descuento === ""){
+    } else if (descuento === "") {
       setAlertaModal("Descuento no puede ir vacío");
       setTimeout(() => {
         setAlertaModal(null);
       }, 2000);
       return;
-    }else if(isNaN(cantidad) || isNaN(descuento) || isNaN(precioArticulo)){
+    } else if (isNaN(cantidad) || isNaN(descuento) || isNaN(precioArticulo)) {
       setAlertaModal("Los valores ingresados deben ser numeros");
       setTimeout(() => {
         setAlertaModal(null);
@@ -194,75 +195,74 @@ export default function Articulos() {
     // Crear una copia de articulos para no modificar el array original
     const copiaArticulos = [...articulos];
     let ordenados;
-  
+
     // Ordenar por precio (menor a mayor)
     if (orden === "menor") {
       ordenados = copiaArticulos.sort((a, b) => a.preciolista - b.preciolista);
       console.log("ordenados menor a mayor");
       setOrdenarPor(false);
-  
-    // Ordenar por precio (mayor a menor)
+
+      // Ordenar por precio (mayor a menor)
     } else if (orden === "mayor") {
       ordenados = copiaArticulos.sort((a, b) => b.preciolista - a.preciolista);
       console.log("ordenados mayor a menor");
       setOrdenarPor(false);
-  
-    // Ordenar por nombre de A a Z
+
+      // Ordenar por nombre de A a Z
     } else if (orden === "az") {
       ordenados = copiaArticulos.sort((a, b) => a.nombre.localeCompare(b.nombre));
       console.log("ordenados de A a Z");
       setOrdenarPor(false);
-  
-    // Ordenar por nombre de Z a A
+
+      // Ordenar por nombre de Z a A
     } else if (orden === "za") {
       ordenados = copiaArticulos.sort((a, b) => b.nombre.localeCompare(a.nombre));
       console.log("ordenados de Z a A");
       setOrdenarPor(false);
     }
-  
+
     // Actualiza el estado de articulos con el array ordenado
     setArticulos(ordenados);
   };
-  
+
 
   const cargarImagen = (articulo) => {
-    if(articulo.lineaarticuloid === 623 || articulo.lineaarticuloid === 1300){
+    if (articulo.lineaarticuloid === 623 || articulo.lineaarticuloid === 1300) {
       return cebolla;
-    }else if(articulo.lineaarticuloid === 627 || articulo.lineaarticuloid === 628 || articulo.lineaarticuloid === 629 || articulo.lineaarticuloid === 687 || articulo.lineaarticuloid === 5262 || articulo.nombre.includes("CHILE") || articulo.nombre.includes("chile")){
+    } else if (articulo.lineaarticuloid === 627 || articulo.lineaarticuloid === 628 || articulo.lineaarticuloid === 629 || articulo.lineaarticuloid === 687 || articulo.lineaarticuloid === 5262 || articulo.nombre.includes("CHILE") || articulo.nombre.includes("chile")) {
       return chile;
-    }else if(articulo.lineaarticuloid === 624 || articulo.lineaarticuloid === 625 || articulo.lineaarticuloid === 9306 || articulo.nombre.includes("TOMATE")){
+    } else if (articulo.lineaarticuloid === 624 || articulo.lineaarticuloid === 625 || articulo.lineaarticuloid === 9306 || articulo.nombre.includes("TOMATE")) {
       return tomate;
-    }else if(articulo.lineaarticuloid === 626 || articulo.nombre.includes("LIMON")){
+    } else if (articulo.lineaarticuloid === 626 || articulo.nombre.includes("LIMON")) {
       return limon;
-    }else if(articulo.lineaarticuloid === 630 || articulo.nombre.includes("PEPINO")){
+    } else if (articulo.lineaarticuloid === 630 || articulo.nombre.includes("PEPINO")) {
       return pepino;
-    }else if(articulo.lineaarticuloid === 631 || articulo.nombre.includes("ELOTE")){
+    } else if (articulo.lineaarticuloid === 631 || articulo.nombre.includes("ELOTE")) {
       return elote;
     }
-    else{
+    else {
       return img;
     }
   }
 
   const cargarDesc = (articulo) => {
-    if(articulo.lineaarticuloid === 623 || articulo.lineaarticuloid === 1300){
+    if (articulo.lineaarticuloid === 623 || articulo.lineaarticuloid === 1300) {
       return "Disfruta de la frescura y sabor único de nuestra cebolla, ideal para dar un toque delicioso y crujiente a tus platillos. Perfecta para ensaladas, guisos y mucho más. ¡Agrégala a tu cocina y mejora cada receta!";
-    }else if(articulo.lineaarticuloid === 627 || articulo.lineaarticuloid === 628 || articulo.lineaarticuloid === 629 || articulo.lineaarticuloid === 687 || articulo.lineaarticuloid === 5262){
+    } else if (articulo.lineaarticuloid === 627 || articulo.lineaarticuloid === 628 || articulo.lineaarticuloid === 629 || articulo.lineaarticuloid === 687 || articulo.lineaarticuloid === 5262) {
       return "Añade un toque de picante y sabor a tus comidas con nuestro chile fresco. Perfecto para darle vida a salsas, tacos y guisos. ¡Haz que cada bocado sea una explosión de sabor!";
-    }else if(articulo.lineaarticuloid === 624 || articulo.lineaarticuloid === 625 || articulo.lineaarticuloid === 9306){
+    } else if (articulo.lineaarticuloid === 624 || articulo.lineaarticuloid === 625 || articulo.lineaarticuloid === 9306) {
       return "Refresca tus platillos con el sabor jugoso y natural de nuestro tomate. Ideal para ensaladas, salsas y guisos. ¡Un ingrediente esencial para resaltar el sabor de tus recetas!";
-    }else if(articulo.lineaarticuloid === 626){
+    } else if (articulo.lineaarticuloid === 626) {
       return "Agrega frescura y un toque ácido con nuestro limón fresco. Perfecto para aderezos, bebidas y dar ese sabor vibrante a tus platillos. ¡El toque ideal para cualquier receta!";
-    }else if(articulo.lineaarticuloid === 630){
+    } else if (articulo.lineaarticuloid === 630) {
       return "Disfruta de la frescura y crocancia de nuestro pepino. Ideal para ensaladas, bocadillos y jugos. ¡Un ingrediente refrescante que aporta sabor y nutrición a tus comidas!";
-    }else if(articulo.lineaarticuloid === 631){
+    } else if (articulo.lineaarticuloid === 631) {
       return "Disfruta del sabor dulce y tierno de nuestro elote fresco. Perfecto para asar, hervir o agregar a tus platillos favoritos. ¡Una delicia que realza cualquier comida!";
-    }else{
+    } else {
       return "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias ut recusandae aperiam eos quas perferendis cum accusantium nihil quibusdam saepe animi accusamus reiciendis quod, culpa consequatur modi quos deserunt maiores!"
     }
   }
 
-console.log(lineaId);
 
   return (
     <>
@@ -325,8 +325,8 @@ console.log(lineaId);
                           <img className={view.grid ? "producto_imagen" : "producto_imagen_row"} src={cargarImagen(articulo)} alt="imagen" />
                         </div>
                         <div className={styles.div_info}>
-                          <p className={`producto_precio`}>Precio: ${articulo.preciolista || precioArticulo}</p>
-                          <p className={`producto_descuento`}>Descuento: {`${descuento} %`}</p>
+                          <p className={`producto_precio`}>{mostrarPrecio && `Precio: $${articulo.preciolista}`}</p>
+                          <p className={`producto_descuento`}>{mostrarPrecio && `Descuento: ${descuento} %`}</p>
                           <button onClick={(e) => {
                             e.stopPropagation();
                             //handleAgregarArticulos(articulo);
@@ -358,6 +358,7 @@ console.log(lineaId);
         )}
 
       </div>
+
 
       {modal && (
         <>

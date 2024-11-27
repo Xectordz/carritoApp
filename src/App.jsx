@@ -6,10 +6,8 @@ import Menu from './components/menu/Menu';
 import Carrito from "./components/carrito/Carrito";
 import Lineas from './components/lineas/Lineas';
 import Articulos from "./components/articulos/Articulos";
-import Busqueda from './components/busqueda/Busqueda';
 import { CarritoProvider } from "./context/CarritoContext";
 import Inicio from "./components/inicio/Inicio";
-import { FaArrowUp } from "react-icons/fa";
 import Todos from './components/todos/Todos'
 import Login from './components/login/Login';
 import OrdenCompra from './components/ordenCompra/OrdenCompra';
@@ -31,7 +29,6 @@ const Main = () => {
   const [activeComponent, setActiveComponent] = useState(null);
   const [redirect, setRedirect] = useState(false);
   const [redirectLogin, setRedirectLogin] = useState(false);
-  const { setCarrito } = useCarrito();
 
   
   useEffect(() => {

@@ -5,12 +5,15 @@ import { IoCartOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { BiLike } from "react-icons/bi";
 import { jsPDF } from "jspdf";
-import img from "../../../public/tv.jpg";
+import { MdMoreVert } from "react-icons/md";
 import { useCarrito } from "../../context/CarritoContext"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from '../modal/Modal';
+import MenuCarrito from './menuCarrito/MenuCarrito';
+import useGrupoLinea from "../../customHook/useGrupoLinea";
 
 export default function Carrito() {
+  const [showMenu, setShowMenu] = useState(false);
   const [alerta, setAlerta] = useState(false);
   const [nota, setNota] = useState("");
   const [precio, setPrecio] = useState("");
@@ -28,8 +31,10 @@ export default function Carrito() {
   const [lotesDisp, setLotesDisp] = useState([]);
   const [indexEditado, setIndexEditado] = useState("");
   const { carrito, setCarrito, cantidadCarrito, cliente, apiURL } = useCarrito();
+  const [alertaModal, setAlertaModal] = useState(null);
 
-
+  
+  
   // Función que calcula el total con descuento
   const calcularTotalModal = (precioArticulo, cantidad, descuento, preciolista) => {
     if (precioArticulo && cantidad && descuento !== undefined) {
@@ -84,7 +89,10 @@ export default function Carrito() {
             }
 
             // Si no se encuentra el lote en articuloEditando.lotesArticulos, devolvemos el lote original
-            return lote;
+            return {
+              ...lote,
+              cantidadLote: 0
+            };
           });
 
           // Actualiza el estado con los lotes filtrados y con el campo cantidadLote añadido
@@ -186,14 +194,66 @@ export default function Carrito() {
 
     return total.toFixed(2);  // Devolver el total calculado con dos decimales
   };
-
+  
 
   // Usar useEffect para ejecutar el cálculo solo cuando el carrito cambia
   useEffect(() => {
     calcularTotal(); // Calcular el total solo cuando el carrito cambie
   }, [carrito]);  // Dependencia de carrito, así que solo se recalcula cuando el carrito cambia
 
+  const previsualización = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(24);
+    doc.text("ESPIRAL SISTEMAS", 105, 20, { align: "center" });
+    doc.setFontSize(12);
+    doc.text(`Cliente: ${cliente.cliente}`, 105, 30, { align: "center" });
+    doc.setFontSize(18);
+    doc.text("Ticket de venta", 105, 40, { align: "center" });
+    doc.setFontSize(12);
+    
+    const fecha = new Date().toLocaleDateString();
+    const ahora = new Date();
+    const horas = ahora.getHours();
+    const minutos = ahora.getMinutes();
+    const segundos = ahora.getSeconds();
+    
+    const formatearHora = (h, m, s) => {
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+    doc.text(`Observaciones: ${cliente.obs}`, 20, 55);
+    doc.text(`Fecha de venta: ${fecha} - ${formatearHora(horas, minutos, segundos)}`, 20, 60);
+    doc.setFontSize(12);
+    doc.text("Folio: ", 20, 65);
+    
+    let yOffset = 80; // Offset para la posición Y de los artículos
+    doc.setFontSize(14);
 
+    carrito.forEach((item, index) => {
+        const totalArticulo = (item.precioArticulo * item.cantidad) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
+        doc.addImage(item.imagen, 'JPEG', 20, yOffset - 10, 15, 15);
+        doc.text(`${item.nombre}`, 45, yOffset - 5);
+        doc.text(`Cant. ${item.cantidad} - $${item.precioArticulo} - Descuento: ${item.descuento}%`, 20, yOffset + 10);
+        doc.text(`Total: $${totalArticulo.toFixed(2)}`, 20, yOffset + 15);
+        doc.text(`Notas: ${item.notas}`, 20, yOffset + 20);
+        doc.text("------------------------", 20, yOffset + 25);
+        
+        // Aumentar el offset para el siguiente artículo
+        yOffset += 40;
+
+        // Comprobar si se ha llegado al final de la página
+        if (yOffset > 250) { // 250 es un ejemplo, puedes ajustar según sea necesario
+            doc.addPage(); // Añadir una nueva página
+            yOffset = 20; // Reiniciar el offset para la nueva página
+        }
+    });
+
+    const totalCompra = calcularTotal();
+    doc.setFontSize(16);
+    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset);
+    
+    setPreviewUrl(doc.output('bloburl')); // Retorna la URL para la previsualización
+    console.log(carrito);
+  };
 
 
   const handleComprar = () => {
@@ -228,10 +288,68 @@ export default function Carrito() {
     }
     console.log(JSON.stringify(body, null, 2));
     console.log(body);
-    setCarrito([]);
     localStorage.removeItem("carrito");
-    navigate("/");
+    previsualización();
   }
+
+
+  const descargarPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(24);
+    doc.text("ESPIRAL SISTEMAS", 105, 20, { align: "center" });
+    doc.setFontSize(12);
+    doc.text(`Cliente: ${cliente.cliente}`, 105, 30, { align: "center" });
+    doc.setFontSize(18);
+    doc.text("Ticket de venta", 105, 40, { align: "center" });
+    doc.setFontSize(12);
+    
+    const fecha = new Date().toLocaleDateString();
+    const ahora = new Date();
+    const horas = ahora.getHours();
+    const minutos = ahora.getMinutes();
+    const segundos = ahora.getSeconds();
+    
+    const formatearHora = (h, m, s) => {
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
+    doc.text(`Observaciones: ${cliente.obs}`, 20, 55);
+    doc.text(`Fecha de venta: ${fecha} - ${formatearHora(horas, minutos, segundos)}`, 20, 60);
+    doc.setFontSize(12);
+    doc.text("Folio: ", 20, 65);
+    
+    let yOffset = 80; // Offset para la posición Y de los artículos
+    doc.setFontSize(14);
+
+    carrito.forEach((item, index) => {
+        const totalArticulo = (item.precioArticulo * item.cantidad) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
+        doc.addImage(item.imagen, 'JPEG', 20, yOffset - 10, 15, 15);
+        doc.text(`${item.nombre}`, 45, yOffset - 5);
+        doc.text(`Cant. ${item.cantidad} - $${item.precioArticulo} - Descuento: ${item.descuento}%`, 20, yOffset + 10);
+        doc.text(`Total: $${totalArticulo.toFixed(2)}`, 20, yOffset + 15);
+        doc.text(`Notas: ${item.notas}`, 20, yOffset + 20);
+        doc.text("------------------------", 20, yOffset + 25);
+        
+        // Aumentar el offset para el siguiente artículo
+        yOffset += 40;
+
+        // Comprobar si se ha llegado al final de la página
+        if (yOffset > 250) { // 250 es un ejemplo, puedes ajustar según sea necesario
+            doc.addPage(); // Añadir una nueva página
+            yOffset = 20; // Reiniciar el offset para la nueva página
+        }
+    });
+
+    const totalCompra = calcularTotal();
+    doc.setFontSize(16);
+    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset);
+
+    doc.save("ticket_compra.pdf");
+
+    setCarrito([]);
+    setPreviewUrl("");
+    navigate("/");
+};
 
 
   const recuperarCarrito = () => {
@@ -267,11 +385,38 @@ export default function Carrito() {
 
   const handleGuardarArticulo = (e, item) => {
     e.preventDefault();
+    const cantidadIsEmty = cantidad === "";
+    if (cantidad <= 0 && cantidadIsEmty) {
+      setAlertaModal("Cantidad no puede ir vacío");
+      setTimeout(() => {
+        setAlertaModal(null);
+      }, 2000);
+      return;
+    } else if (precio === "" || precio < 1) {
+      setAlertaModal("Precio no puede ir vacío");
+      setTimeout(() => {
+        setAlertaModal(null);
+      }, 2000);
+      return;
+    } else if (descuento === "") {
+      setAlertaModal("Descuento no puede ir vacío");
+      setTimeout(() => {
+        setAlertaModal(null);
+      }, 2000);
+      return;
+    } else if (isNaN(cantidad) || isNaN(descuento) || isNaN(precio)) {
+      setAlertaModal("Los valores ingresados deben ser numeros");
+      setTimeout(() => {
+        setAlertaModal(null);
+      }, 2000);
+      return;
+    }
+
     // Calcular la suma de las cantidades de los lotes editados
     const sumaLotes = lotesArticulosEditados.reduce((total, lote) => total + lote.cantidadLote, 0);
 
     // Verificar si la suma de las cantidades de los lotes no sobrepasa la cantidad total
-    if(articuloEditando.lotesArticulos.length !== 0 && sumaLotes !== Number(cantidad)) {
+    if (articuloEditando.lotesArticulos.length !== 0 && sumaLotes !== Number(cantidad)) {
       // Si la suma es mayor a la cantidad total, mostrar un mensaje de error
       alert('La suma de las cantidades de los lotes no puede ser diferente a la cantidad total del artículo.');
       setLotesArticulosEditados([]);
@@ -312,42 +457,6 @@ export default function Carrito() {
   };
 
 
-
-  // Manejador para cambiar la cantidad en un lote específico
-  const handleCantidadLoteChange = (nomalmacen, artdiscretoid, loteClave, value) => {
-    // Encuentra el lote correspondiente con la clave
-    const lote = lotes.find(l => l.clave === loteClave);
-
-    // Verifica que el lote exista y que la cantidad no exceda la existencia disponible
-    if (lote && value <= lote.existencia) {
-      // Actualiza la cantidad por lote
-      setCantidadPorLote(prev => ({
-        ...prev,
-        [loteClave]: value,
-      }));
-
-      // Actualiza o agrega el artículo en los lotesArticulosEditados
-      setLotesArticulosEditados(prev => {
-        // Busca el índice del artículo en el array de lotesArticulosEditados
-        const index = prev.findIndex(item => item.artdiscretoid === artdiscretoid);
-
-        if (index === -1) {
-          // Si el artículo no existe, agrega un nuevo objeto con la cantidadLote
-          return [
-            ...prev,
-            { nomalmacen, artdiscretoid, cantidadLote: value },
-          ];
-        } else {
-          // Si el artículo ya existe, actualiza la cantidadLote
-          const newLotesArticulos = [...prev];
-          newLotesArticulos[index] = { ...newLotesArticulos[index], cantidadLote: value };
-          return newLotesArticulos;
-        }
-      });
-    }
-  };
-
-  
   const formatearCantidad = (cantidad) => {
     return new Intl.NumberFormat('en-US', {
       style: 'decimal',
@@ -360,22 +469,31 @@ export default function Carrito() {
     <>
       {!previewUrl ? (
         <div className={styles.carrito_contenedor}>
+          {
+            carrito.length > 0 && (
+              <p onClick={() => setShowMenu(true)} className={styles.menu_icon} title='Más opciones'><MdMoreVert /></p>
+            )
+          }
           <h3>Carrito</h3>
           {carrito.length > 0 && (
             <div className={styles.div_eliminarTodo}>
+              <p className={styles.cliente}><span>Cliente:</span> {cliente.cliente.toLowerCase()}</p>
               <p onClick={eliminarTodo} className={styles.eliminarTodo}><FaRegTrashAlt />Eliminar todo</p>
             </div>
           )}
           <div className={styles.div_articulos}>
             {carrito.length > 0 && (
               <div className={styles.resumen_contenedor}>
-                <div>
-                  <p>Articulos: ({cantidadCarrito})</p>
-                  <p>Total del Carrito: ${calcularTotal()}</p>
+                <div className={styles.div_resumen}>
+                  <div>
+                    <p>Articulos: ({cantidadCarrito})</p>
+                    <p>Total Carrito: ${calcularTotal()}</p>
+                  </div>
+                  <button onClick={handleComprar}>Comprar</button>
                 </div>
-                <button onClick={handleComprar}>Comprar</button>
               </div>
             )}
+
             {carrito.length > 0 ? carrito.map((item, index) => (
               <div
                 key={index}
@@ -454,8 +572,9 @@ export default function Carrito() {
                       <Modal
                         articuloCarrito={articuloEditando}
                         handleSubmit={handleGuardarArticulo}
-                        closeModal={()=>setEditarArticulo(false)}
+                        closeModal={() => setEditarArticulo(false)}
                         cantidad={cantidad}
+                        alertaModal={alertaModal}
                         setCantidad={setCantidad}
                         precioArticulo={precio}
                         setPrecioArticulo={setPrecio}
@@ -465,6 +584,7 @@ export default function Carrito() {
                         setNotas={setNota}
                         setLotesArticulos={setLotesArticulosEditados}
                         total={total}
+                        lotesEditados={lotes}
                       />
                     </>
                   )}
@@ -484,6 +604,7 @@ export default function Carrito() {
                 <p><IoCartOutline /></p>
               </div>
             )}
+
           </div>
         </div>
       ) : (
@@ -496,6 +617,17 @@ export default function Carrito() {
           <iframe src={previewUrl} width="100%" height="500px" title="Previsualización PDF"></iframe>
         </div>
       )}
+
+      <div className={`${styles.menu_carrito} ${showMenu ? styles.mostrarMenu : ""}`}>
+        {
+          showMenu && (
+            <MenuCarrito
+              showMenu={showMenu}
+              setShowMenu={setShowMenu}
+            />
+          )
+        }
+      </div>
     </>
   );
 }

@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styles from "../inicio/inicio.module.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCarrito } from "../../context/CarritoContext";
 import { IoIosSearch } from "react-icons/io";
 import { BiLogOut } from "react-icons/bi";
+import useGrupoLinea from '../../customHook/useGrupoLinea';
 
 
-export default function Inicio() {
+export default function Inicio({lastRoute}) {
   const { setCliente, usuario, setUsuario, apiURL } = useCarrito();
   const [clienteInput, setClienteInput] = useState('');
   const [claveInput, setClaveInput] = useState('');
@@ -40,11 +41,12 @@ export default function Inicio() {
   }, [apiURL]);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const clienteListRef = useRef();
   const claveListRef = useRef();
   const inputRef = useRef();
 
-  
+
 
   useEffect(() => {
     const today = new Date();
@@ -72,6 +74,8 @@ export default function Inicio() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -109,7 +113,7 @@ export default function Inicio() {
 
   const handleSearchClaveClick = () => {
     if (claveInput) {
-      const coincide = options.filter(option => 
+      const coincide = options.filter(option =>
         option.clavecliente && option.clavecliente.toLowerCase().includes(claveInput.toLowerCase()) // Solo filtra si `clavecliente` existe
       );
       setIsClaveListVisible(coincide.length > 0);
@@ -132,7 +136,7 @@ export default function Inicio() {
 
   const handleKeyDown = (e) => {
     const filteredClienteOptions = options.filter(option => option.nombre.toLowerCase().includes(clienteInput.toLowerCase()));
-    const filteredClaveOptions = options.filter(option => 
+    const filteredClaveOptions = options.filter(option =>
       option.clavecliente && option.clavecliente.toLowerCase().includes(claveInput.toLowerCase()) // Solo filtra si `clavecliente` existe
     );
 
