@@ -147,7 +147,7 @@ export default function Modal({
     const valor = cantidad - calcularTotalCantidadSeleccionada();
 
     if (valor > 0) {
-      return valor
+      return formatearCantidad(valor);
     }
     return "Cantidad exedida"
   }

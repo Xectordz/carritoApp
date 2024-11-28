@@ -24,12 +24,14 @@
 .menu_icon{
     position: absolute;
     top: 5rem;
-    right: .8rem;
+    right: .9rem;
     display: flex;
     font-size: 1.7rem;
-    padding: .5rem;
+    padding: .3rem;
     cursor: pointer;
-    border-radius: .3rem;
+    border-radius: .5rem;
+    color: gray;
+    border: solid 1px rgb(187, 187, 187);
 }
 /*Side bar de menu en carrito*/
 .menu_carrito{

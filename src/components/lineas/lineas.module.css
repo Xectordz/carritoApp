@@ -1,7 +1,7 @@
 @import url(../../index.css);
 .container{
     padding-top: 5rem;
-    background-color: var(--color-gris);
+    background-color: var(--color-blanco);
     min-height: 100vh;
     max-height: auto;
 }

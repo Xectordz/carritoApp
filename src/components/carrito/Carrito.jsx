@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from "../carrito/carrito.module.css";
 import { FaRegTrashAlt, FaEdit, FaCheck } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
@@ -32,9 +32,9 @@ export default function Carrito() {
   const [indexEditado, setIndexEditado] = useState("");
   const { carrito, setCarrito, cantidadCarrito, cliente, apiURL } = useCarrito();
   const [alertaModal, setAlertaModal] = useState(null);
+  const menuRef = useRef();
 
-  
-  
+
   // Función que calcula el total con descuento
   const calcularTotalModal = (precioArticulo, cantidad, descuento, preciolista) => {
     if (precioArticulo && cantidad && descuento !== undefined) {
@@ -43,6 +43,19 @@ export default function Carrito() {
     }
     return 0; // Retorna 0 si los valores no son válidos
   };
+
+  useEffect(()=>{
+    const handleClickOutSide = (e) => {
+      if(menuRef.current && !menuRef.current.contains(e.target)){
+        setShowMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutSide);
+
+    return ()=>{
+      document.addEventListener("mousedown", handleClickOutSide);
+    }
+  }, [showMenu]);
 
   // Usamos useEffect para recalcular el total cada vez que cambien los valores dentro del modal
   useEffect(() => {
@@ -194,7 +207,7 @@ export default function Carrito() {
 
     return total.toFixed(2);  // Devolver el total calculado con dos decimales
   };
-  
+
 
   // Usar useEffect para ejecutar el cálculo solo cuando el carrito cambia
   useEffect(() => {
@@ -210,50 +223,64 @@ export default function Carrito() {
     doc.setFontSize(18);
     doc.text("Ticket de venta", 105, 40, { align: "center" });
     doc.setFontSize(12);
-    
+
     const fecha = new Date().toLocaleDateString();
     const ahora = new Date();
     const horas = ahora.getHours();
     const minutos = ahora.getMinutes();
     const segundos = ahora.getSeconds();
-    
+
     const formatearHora = (h, m, s) => {
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     };
     doc.text(`Observaciones: ${cliente.obs}`, 20, 55);
     doc.text(`Fecha de venta: ${fecha} - ${formatearHora(horas, minutos, segundos)}`, 20, 60);
     doc.setFontSize(12);
     doc.text("Folio: ", 20, 65);
-    
+
     let yOffset = 80; // Offset para la posición Y de los artículos
     doc.setFontSize(14);
 
-    carrito.forEach((item, index) => {
-        const totalArticulo = (item.precioArticulo * item.cantidad) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
-        doc.addImage(item.imagen, 'JPEG', 20, yOffset - 10, 15, 15);
-        doc.text(`${item.nombre}`, 45, yOffset - 5);
-        doc.text(`Cant. ${item.cantidad} - $${item.precioArticulo} - Descuento: ${item.descuento}%`, 20, yOffset + 10);
-        doc.text(`Total: $${totalArticulo.toFixed(2)}`, 20, yOffset + 15);
-        doc.text(`Notas: ${item.notas}`, 20, yOffset + 20);
-        doc.text("------------------------", 20, yOffset + 25);
-        
-        // Aumentar el offset para el siguiente artículo
-        yOffset += 40;
+    carrito.forEach((item) => {
+      const totalArticulo = (item.precioArticulo * item.cantGlobal) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
 
-        // Comprobar si se ha llegado al final de la página
-        if (yOffset > 250) { // 250 es un ejemplo, puedes ajustar según sea necesario
-            doc.addPage(); // Añadir una nueva página
-            yOffset = 20; // Reiniciar el offset para la nueva página
-        }
+      // Imagen del artículo
+      doc.addImage(item.imagen, 'JPEG', 20, yOffset, 15, 15);
+
+      // Nombre y descripción del artículo a la derecha de la imagen
+      doc.text(`${item.nombre}`, 45, yOffset + 5); // Ajuste en Y para mejor alineación
+      doc.text(`Cant. ${item.cantGlobal} - $${item.precioArticulo} - Desc. ${item.descuento}%`, 45, yOffset + 15);
+
+      // Listado de lotes del artículo (sin espacio innecesario)
+      item.lotesArticulos.forEach((lote) => {
+        doc.text(`Clave Lote: ${lote.clave} | Cantidad: ${lote.cantidadLote}`, 45, yOffset + 25);
+        yOffset += 10; // Espacio adicional para los lotes
+      });
+
+      // Total por artículo y notas (sin mucho espacio)
+      yOffset += 25; // Aseguramos que haya espacio para el total después de los lotes
+      doc.text(`Total: $${totalArticulo.toFixed(2)} | Notas: ${item.notas}`, 45, yOffset);
+
+      // Aumentamos el offset de forma eficiente para el siguiente artículo
+      yOffset += (item.lotesArticulos.length * 10); // Ajuste compacto según lotes
+
+      // Comprobar si se ha llegado al final de la página
+      if (yOffset > 250) { // Si el contenido excede la página
+        doc.addPage(); // Añadir una nueva página
+        yOffset = 20; // Reiniciar el offset para la nueva página
+      }
     });
 
     const totalCompra = calcularTotal();
     doc.setFontSize(16);
-    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset);
-    
+    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset + 10);
+
     setPreviewUrl(doc.output('bloburl')); // Retorna la URL para la previsualización
-    console.log(carrito);
+    
   };
+
+
+
 
 
   const handleComprar = () => {
@@ -289,7 +316,7 @@ export default function Carrito() {
     console.log(JSON.stringify(body, null, 2));
     console.log(body);
     localStorage.removeItem("carrito");
-    previsualización();
+    descargarPDF();
   }
 
 
@@ -302,54 +329,64 @@ export default function Carrito() {
     doc.setFontSize(18);
     doc.text("Ticket de venta", 105, 40, { align: "center" });
     doc.setFontSize(12);
-    
+
     const fecha = new Date().toLocaleDateString();
     const ahora = new Date();
     const horas = ahora.getHours();
     const minutos = ahora.getMinutes();
     const segundos = ahora.getSeconds();
-    
-    const formatearHora = (h, m, s) => {
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    };
 
+    const formatearHora = (h, m, s) => {
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
     doc.text(`Observaciones: ${cliente.obs}`, 20, 55);
     doc.text(`Fecha de venta: ${fecha} - ${formatearHora(horas, minutos, segundos)}`, 20, 60);
     doc.setFontSize(12);
     doc.text("Folio: ", 20, 65);
-    
+
     let yOffset = 80; // Offset para la posición Y de los artículos
     doc.setFontSize(14);
 
-    carrito.forEach((item, index) => {
-        const totalArticulo = (item.precioArticulo * item.cantidad) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
-        doc.addImage(item.imagen, 'JPEG', 20, yOffset - 10, 15, 15);
-        doc.text(`${item.nombre}`, 45, yOffset - 5);
-        doc.text(`Cant. ${item.cantidad} - $${item.precioArticulo} - Descuento: ${item.descuento}%`, 20, yOffset + 10);
-        doc.text(`Total: $${totalArticulo.toFixed(2)}`, 20, yOffset + 15);
-        doc.text(`Notas: ${item.notas}`, 20, yOffset + 20);
-        doc.text("------------------------", 20, yOffset + 25);
-        
-        // Aumentar el offset para el siguiente artículo
-        yOffset += 40;
+    carrito.forEach((item) => {
+      const totalArticulo = (item.precioArticulo * item.cantGlobal) - ((item.precioArticulo * item.descuento / 100) * item.cantidad);
 
-        // Comprobar si se ha llegado al final de la página
-        if (yOffset > 250) { // 250 es un ejemplo, puedes ajustar según sea necesario
-            doc.addPage(); // Añadir una nueva página
-            yOffset = 20; // Reiniciar el offset para la nueva página
-        }
+      // Imagen del artículo
+      doc.addImage(item.imagen, 'JPEG', 20, yOffset, 15, 15);
+
+      // Nombre y descripción del artículo a la derecha de la imagen
+      doc.text(`${item.nombre}`, 45, yOffset + 5); // Ajuste en Y para mejor alineación
+      doc.text(`Cant. ${item.cantGlobal} - $${item.precioArticulo} - Desc. ${item.descuento}%`, 45, yOffset + 15);
+
+      // Listado de lotes del artículo (sin espacio innecesario)
+      item.lotesArticulos.forEach((lote) => {
+        doc.text(`Clave Lote: ${lote.clave} | Cantidad: ${lote.cantidadLote}`, 45, yOffset + 25);
+        yOffset += 10; // Espacio adicional para los lotes
+      });
+
+      // Total por artículo y notas (sin mucho espacio)
+      yOffset += 25; // Aseguramos que haya espacio para el total después de los lotes
+      doc.text(`Total: $${totalArticulo.toFixed(2)} | Notas: ${item.notas}`, 45, yOffset);
+
+      // Aumentamos el offset de forma eficiente para el siguiente artículo
+      yOffset += (item.lotesArticulos.length * 10); // Ajuste compacto según lotes
+
+      // Comprobar si se ha llegado al final de la página
+      if (yOffset > 250) { // Si el contenido excede la página
+        doc.addPage(); // Añadir una nueva página
+        yOffset = 20; // Reiniciar el offset para la nueva página
+      }
     });
 
     const totalCompra = calcularTotal();
     doc.setFontSize(16);
-    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset);
+    doc.text(`TOTAL: $${totalCompra}`, 20, yOffset + 10);
 
-    doc.save("ticket_compra.pdf");
+    doc.save(`${cliente.claveCliente || cliente.cliente_id}${fecha}.pdf`);
 
     setCarrito([]);
     setPreviewUrl("");
     navigate("/");
-};
+  };
 
 
   const recuperarCarrito = () => {
@@ -477,7 +514,10 @@ export default function Carrito() {
           <h3>Carrito</h3>
           {carrito.length > 0 && (
             <div className={styles.div_eliminarTodo}>
-              <p className={styles.cliente}><span>Cliente:</span> {cliente.cliente.toLowerCase()}</p>
+              <div className={styles.cliente}>
+                <p><span>Cliente (No):</span> {cliente.claveCliente && cliente.claveCliente.toLowerCase()}</p>
+                <p><span>Nombre:</span> {cliente.cliente.toLowerCase()}</p>
+              </div>
               <p onClick={eliminarTodo} className={styles.eliminarTodo}><FaRegTrashAlt />Eliminar todo</p>
             </div>
           )}
@@ -489,7 +529,7 @@ export default function Carrito() {
                     <p>Articulos: ({cantidadCarrito})</p>
                     <p>Total Carrito: ${calcularTotal()}</p>
                   </div>
-                  <button onClick={handleComprar}>Comprar</button>
+                  <button onClick={previsualización}>Comprar</button>
                 </div>
               </div>
             )}
@@ -611,14 +651,14 @@ export default function Carrito() {
         <div className={styles.pdf_container}>
           <h3>Previsualización del Ticket</h3>
           <div>
-            <button onClick={descargarPDF}>Descargar PDF</button>
+            <button onClick={handleComprar}>Descargar PDF</button>
             <button onClick={() => setPreviewUrl("")}><IoMdClose /></button>
           </div>
           <iframe src={previewUrl} width="100%" height="500px" title="Previsualización PDF"></iframe>
         </div>
       )}
 
-      <div className={`${styles.menu_carrito} ${showMenu ? styles.mostrarMenu : ""}`}>
+      <div ref={menuRef} className={`${styles.menu_carrito} ${showMenu ? styles.mostrarMenu : ""}`}>
         {
           showMenu && (
             <MenuCarrito
