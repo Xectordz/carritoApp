@@ -1,7 +1,8 @@
 @import url(../../index.css);
 
 .carrito_contenedor{
-    background-color: var(--color-gris);
+    background-color: #dfdfdf;
+    color: black;
     height: auto;
     min-height: 100vh;
     z-index: 100;
@@ -132,6 +133,7 @@
     border-top-right-radius: .5rem;
     padding: .5rem;
     text-align: center;
+    color: var(--text-color);
     font-size: 1.1rem;
     width: 100%;
     font-weight: normal;
@@ -195,7 +197,7 @@
     gap: .5rem;
 }
 .div_agregar p{
-    background-color: blue;
+    background-color: var(--color-principal);
     border-radius: 50%;
     width: 1.3rem;
     font-weight: bold;
@@ -239,7 +241,7 @@
     gap: .5rem;
 }
 .editar{
-    background-color: rgb(45, 99, 216);
+    background-color: var(--color-principal);
     color: white;
     display: flex;
     align-items: center;
@@ -309,7 +311,7 @@
     width: 90%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
     border-radius: .5rem;
     max-width: 500px;
     margin: 0 auto;

@@ -78,33 +78,27 @@ export default function Grupos() {
 
   const handleCambiarCliente = () => {
     navigate("/");
-    setCliente({
-      cliente: "",
-      fecha: "",
-      obs: ""
-    });
 
     setCarrito([]);
     localStorage.removeItem("carrito");
-    localStorage.removeItem("existeCliente");
   }
 
   const cargarImagen = (grupo) => {
-      if(grupo.Nombre === "CEBOLLA "){
-        return cebolla;
-      }else if(grupo.Nombre === "CHILE"){
-        return chile;
-      }else if(grupo.Nombre === "TOMATE"){
-        return tomate;
-      }else if(grupo.Nombre === "LIMON"){
-        return limon;
-      }else if(grupo.Nombre === "PEPINO "){
-        return pepino;
-      }else if(grupo.Nombre === "ELOTE"){
-        return elote;
-      }else{
-        return img;
-      }
+    if (grupo.Nombre === "CEBOLLA ") {
+      return cebolla;
+    } else if (grupo.Nombre === "CHILE") {
+      return chile;
+    } else if (grupo.Nombre === "TOMATE") {
+      return tomate;
+    } else if (grupo.Nombre === "LIMON") {
+      return limon;
+    } else if (grupo.Nombre === "PEPINO ") {
+      return pepino;
+    } else if (grupo.Nombre === "ELOTE") {
+      return elote;
+    } else {
+      return img;
+    }
   }
 
   return (
@@ -139,9 +133,11 @@ export default function Grupos() {
                     className="item_contenedor"
                   >
 
-                    <img src={cargarImagen(grupo)} alt="" />
                     <div className="div_nombre_item">
                       <p>{grupo.Nombre}</p>
+                    </div>
+                    <div className='div_imagen_item'>
+                      <img src={cargarImagen(grupo)} alt="" />
                     </div>
 
                   </div>

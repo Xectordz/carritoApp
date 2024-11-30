@@ -515,8 +515,8 @@ export default function Carrito() {
           {carrito.length > 0 && (
             <div className={styles.div_eliminarTodo}>
               <div className={styles.cliente}>
-                <p><span>Cliente (No):</span> {cliente.claveCliente && cliente.claveCliente.toLowerCase()}</p>
-                <p><span>Nombre:</span> {cliente.cliente.toLowerCase()}</p>
+                <p><span>Cliente (No):</span> {cliente.claveCliente && cliente.claveCliente}</p>
+                <p><span>Nombre:</span> {cliente.cliente}</p>
               </div>
               <p onClick={eliminarTodo} className={styles.eliminarTodo}><FaRegTrashAlt />Eliminar todo</p>
             </div>
@@ -601,9 +601,13 @@ export default function Carrito() {
                         }}><FaEdit /></p>
                     </div>
                   </div>
-                  <div className={styles.notas}>
-                    <p><span>Notas:</span> {item.notas}</p>
-                  </div>
+                  {
+                    item.notas !== "" && (
+                      <div className={styles.notas}>
+                        <p><span>Notas:</span> {item.notas}</p>
+                      </div>
+                    )
+                  }
 
 
                   {/* MODAL EDITAR ARTICULO */}

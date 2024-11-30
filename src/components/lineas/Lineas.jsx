@@ -92,9 +92,11 @@ export default function Lineas() {
               {
                 lineas.map((linea, index) => (
                   <div key={index} onClick={() => handleLinea(linea.Linea_Articulo_Id)} className="item_contenedor">
-                    <img src={cargarImagen(linea)} alt="" />
                     <div className='div_nombre_item'>
                       <p>{linea.Nombre}</p>
+                    </div>
+                    <div className='div_imagen_item'>
+                      <img src={cargarImagen(linea)} alt="" />
                     </div>
                   </div>
                 ))

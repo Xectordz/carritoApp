@@ -20,14 +20,14 @@ export default function Nav({ activeComponent, setActiveComponent }) {
     const inputBuscarRef = useRef(null); // Nuevo ref para el input de búsqueda
     const [isCarritoActive, setIsCarritoActive] = useState(false);
 
-    const { cantidadCarrito, usuario } = useCarrito();
+    const { cantidadCarrito, usuario, setCliente } = useCarrito();
 
     const abrirMenu = () => setActiveComponent("menu");
     const cerrarMenu = () => setActiveComponent(null);
 
     useEffect(() => {
         if (location.pathname !== '/carrito') {
-          setIsCarritoActive(false);
+            setIsCarritoActive(false);
         }
     }, [location, isCarritoActive]);
 
@@ -110,11 +110,15 @@ export default function Nav({ activeComponent, setActiveComponent }) {
         localStorage.removeItem("existeUsuario");
         localStorage.removeItem("existeCliente");
         localStorage.removeItem("cliente");
+        setCliente({
+            cliente: "",
+            fecha: "",
+            obs: ""
+        });
     };
 
     const handleVenta = () => {
         setActiveComponent(null);
-        localStorage.removeItem("existeCliente");
         navigate("/");
     };
 
@@ -122,6 +126,53 @@ export default function Nav({ activeComponent, setActiveComponent }) {
         navigate("/ordenCompra");
         cerrarMenu();
     };
+
+    const cambiarColor = (color) => {
+        let colorGris, colorBlanco, textColor;
+
+        if (color === "grises") {
+            colorGris = "#e4e4e4";
+            colorBlanco = "#ffffff";
+            textColor = "#000000";
+        } else if (color === "rojo") {
+            colorGris = "#ad0b0b";
+            colorBlanco = "#d14e4e";
+            textColor = "#ffffff";
+        } else if (color === "azul") {
+            colorGris = "#0087c5";
+            colorBlanco = "#8dc7e2";
+            textColor = "#ffffff";
+        } else if (color === "verde") {
+            colorGris = "#148868";
+            colorBlanco = "#79cf84";
+            textColor = "#ffffff";
+        }
+
+        // Aplicar las variables CSS
+        document.documentElement.style.setProperty("--color-gris", colorGris);
+        document.documentElement.style.setProperty("--color-blanco", colorBlanco);
+        document.documentElement.style.setProperty("--text-color", textColor);
+
+        // Guardar las propiedades en localStorage
+        localStorage.setItem("colorGris", colorGris);
+        localStorage.setItem("colorBlanco", colorBlanco);
+        localStorage.setItem("textColor", textColor);
+    }
+    window.onload = () => {
+        // Verificar si las propiedades están guardadas en el localStorage
+        const colorGris = localStorage.getItem("colorGris");
+        const colorBlanco = localStorage.getItem("colorBlanco");
+        const textColor = localStorage.getItem("textColor");
+
+        // Si están disponibles, aplicar los estilos
+        if (colorGris && colorBlanco && textColor) {
+            document.documentElement.style.setProperty("--color-gris", colorGris);
+            document.documentElement.style.setProperty("--color-blanco", colorBlanco);
+            document.documentElement.style.setProperty("--text-color", textColor);
+        }
+    }
+
+
 
     return (
         <div className={styles.container}>
@@ -138,9 +189,9 @@ export default function Nav({ activeComponent, setActiveComponent }) {
                     <p title={activeComponent === "buscar" ? "Cerrar Busqueda" : "Buscar Articulo"} onClick={toggleBuscar} className={`${styles.buscar} ${activeComponent === "buscar" && styles.active}`}>
                         {
                             activeComponent === "buscar" ? (
-                                <IoMdClose/>
+                                <IoMdClose />
                             ) : (
-                                <IoIosSearch/>
+                                <IoIosSearch />
                             )
                         }
                     </p>
@@ -157,21 +208,32 @@ export default function Nav({ activeComponent, setActiveComponent }) {
                         <>
                             <div className={styles.overlay}></div>
                             <div className={styles.menu_container} >
-                                <p onClick={cerrarMenu} className={styles.close_menu}><IoMdClose/></p>
+                                <p onClick={cerrarMenu} className={styles.close_menu}><IoMdClose /></p>
                                 <div className={styles.div_usuario}>
                                     <p className={styles.usuario}>Usuario: <span>{usuario.split(" ")[0]}</span></p>
-                                    <p title='Cerrar sesion' onClick={handleCerrarSesion} className={styles.salir}><BiLogOut/></p>
+                                    <p title='Cerrar sesion' onClick={handleCerrarSesion} className={styles.salir}><BiLogOut /></p>
                                 </div>
 
                                 <div className={styles.div_opciones}>
-                                    <div onClick={()=>navigate("/grupos")}>
-                                        <p>Ver Grupos</p>
+                                    <div className={styles.opciones}>
+                                        <div onClick={() => navigate("/grupos")}>
+                                            <p>Ver Grupos</p>
+                                        </div>
+                                        <div onClick={handleVenta}>
+                                            <p>Cambiar Cliente</p>
+                                        </div>
+                                        <div onClick={handleOrdenVenta}>
+                                            <p>Orden de Compra</p>
+                                        </div>
                                     </div>
-                                    <div onClick={handleVenta}>
-                                        <p>Venta</p>
-                                    </div>
-                                    <div onClick={handleOrdenVenta}>
-                                        <p>Orden de Compra</p>
+                                    <div className={styles.div_personalizacion}>
+                                        <h5>Personalización</h5>
+                                        <div className={styles.colores}>
+                                            <div onClick={() => cambiarColor("grises")} className={styles.grises}></div>
+                                            <div onClick={() => cambiarColor("rojo")} className={styles.rojo}></div>
+                                            <div onClick={() => cambiarColor("azul")} className={styles.azul}></div>
+                                            <div onClick={() => cambiarColor("verde")} className={styles.verde}></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -193,7 +255,7 @@ export default function Nav({ activeComponent, setActiveComponent }) {
                                         type="text"
                                     />
                                     <button disabled={busquedaParam.trim() === ""} onClick={handleBusqueda}>Buscar</button>
-                                </div>  
+                                </div>
                             </div>
                         </form>
                     )

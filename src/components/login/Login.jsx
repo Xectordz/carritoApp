@@ -105,7 +105,7 @@ export default function Login() {
       <div className='overlay'></div>
       <form onSubmit={handleLogin} className={styles.login_form} action="">
 
-        <h3>Inicia Sesion</h3>
+        <h3>Inicia Sesión</h3>
         {
           loading ? (
             <p className={styles.spinner}><FaSpinner/></p>
@@ -156,7 +156,7 @@ export default function Login() {
             </div>
 
             
-            <button>Iniciar sesion</button>
+            <button>Iniciar Sesión</button>
           </div>
           )
         }

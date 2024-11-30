@@ -8,7 +8,7 @@ import useGrupoLinea from '../../customHook/useGrupoLinea';
 
 
 export default function Inicio({lastRoute}) {
-  const { setCliente, usuario, setUsuario, apiURL } = useCarrito();
+  const { cliente, setCliente, usuario, setUsuario, apiURL } = useCarrito();
   const [clienteInput, setClienteInput] = useState('');
   const [claveInput, setClaveInput] = useState('');
   const [fechaInput, setFechaInput] = useState('');
@@ -179,6 +179,10 @@ export default function Inicio({lastRoute}) {
     navigate("/login");
   };
 
+  const handleRegresar = () => {
+    window.history.back();
+  }
+
   return (
     <>
       <div className='overlay'></div>
@@ -186,8 +190,20 @@ export default function Inicio({lastRoute}) {
         <form onSubmit={handleSubmit} className={styles.inicio_form}>
           <h3>Cliente</h3>
           <div className={styles.div_usuario}>
-            <p>Usuario: <span>{usuario}</span></p>
-            <p onClick={handleCerrarSesion}><BiLogOut /></p>
+            {
+              cliente.cliente !== "" ? (
+                <>
+                  <p>Regresar</p>
+                  <p onClick={handleRegresar}><BiLogOut /></p>
+                </>
+              ) : (
+                <>
+                  <p>Usuario: <span>{usuario}</span></p>
+                  <p onClick={handleCerrarSesion}><BiLogOut /></p>
+                </>
+              )
+            }
+            
           </div>
           <div className={styles.div_form}>
             {/* Clave  */}

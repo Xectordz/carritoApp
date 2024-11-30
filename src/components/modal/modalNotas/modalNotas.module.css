@@ -4,6 +4,7 @@
     position: fixed;
     z-index: 1001;
     background-color: white;
+    color: black;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -53,7 +54,8 @@
 }
 .titulo{
     padding: 1rem;
-    background-color: rgb(209, 209, 209);
+    background-color: var(--color-gris);
+    color: var(--text-color);
     border-top-left-radius: .3rem;
     border-top-right-radius: .3rem;
 }

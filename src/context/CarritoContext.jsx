@@ -22,7 +22,7 @@ export const CarritoProvider = ({ children }) => {
     return storedUsuario ? JSON.parse(storedUsuario) : null;
   });
 
-  const apiURL = "http://192.168.1.122:5000";
+  const apiURL = "http://192.168.1.227:5000";
 
   //
   useEffect(()=> {

@@ -152,7 +152,7 @@ export default function Modal({
     return "Cantidad exedida"
   }
 
-  
+
 
   return (
     <>
@@ -177,12 +177,12 @@ export default function Modal({
 
                   {/*Boton Agregar opciones*/}
                   <div div className={styles.div_agregar_opcion}>
-                    <p className={styles.boton_opciones} onClick={()=>setShowOpciones(prev=>!prev)} title='Más opciones'><MdMoreVert /></p>
+                    <p className={styles.boton_opciones} onClick={() => setShowOpciones(prev => !prev)} title='Más opciones'><MdMoreVert /></p>
                     {
                       showOpciones && (
                         <div className={styles.div_opciones}>
                           <div>
-                            <p onClick={()=>{
+                            <p onClick={() => {
                               setShowAgregarNotas(true);
                               setShowOpciones(false);
                             }}>Agregar Nota</p>
@@ -195,7 +195,7 @@ export default function Modal({
                     }
                   </div>
 
-                  
+
 
                   <img className={styles.articulo_img} src={articuloCarrito.imagen} alt="" />
                   {/*
@@ -268,7 +268,7 @@ export default function Modal({
                             )
                           )
                         }
-                        
+
                         {
                           alertaModal && (
                             <p className={styles.obligatorios}>{alertaModal}</p>
@@ -319,18 +319,23 @@ export default function Modal({
                 }
 
                 {/*MODAL DE LOTES*/}
-                <div className={`${styles.div_lotes_notas} ${ejemplo.ejemplo1 && lotes.length > 0 ? styles.div_lotes_notas : styles.col}`}>
-                  {
-                    ejemplo.ejemplo1 && (
-                      lotes.length > 0 && (
-                        <div className={styles.div_lotesDisponibles}>
-                          <p>Lotes Disponibles: {lotes.length}</p>
-                          <p className={styles.boton_modal} onClick={abrirModalLotes}>{"Seleccionar Lotes"}</p>
-                        </div>
-                      )
-                    )
-                  }
-                </div>
+                {
+                  ejemplo.ejemplo1 && (
+                    <div className={`${styles.div_lotes_notas} ${lotes.length > 0 ? styles.div_lotes_notas : styles.col}`}>
+                      {
+                        ejemplo.ejemplo1 && (
+                          lotes.length > 0 && (
+                            <div className={styles.div_lotesDisponibles}>
+                              <p>Lotes Disponibles: {lotes.length}</p>
+                              <p className={styles.boton_modal} onClick={abrirModalLotes}>{"Seleccionar Lotes"}</p>
+                            </div>
+                          )
+                        )
+                      }
+                    </div>
+                  )
+                }
+
 
                 <button type="submit" disabled={lotes.length !== 0 ? !esCantidadValida : false}>Agregar al Carrito <MdAddShoppingCart /></button>
               </div>

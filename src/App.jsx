@@ -59,7 +59,7 @@ const Main = () => {
 
     <>
     
-      <Nav 
+      <Nav
           activeComponent={activeComponent}
           setActiveComponent={setActiveComponent}
       />

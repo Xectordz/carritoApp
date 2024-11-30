@@ -7,6 +7,7 @@ import { BiLike } from "react-icons/bi";
 import { FaSpinner } from "react-icons/fa6";
 import { MdGridView } from "react-icons/md";
 import { MdOutlineViewAgenda } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 /*imagen de prueba*/
 import img from "../../../public/tv.jpg";
 /*componente de Modal*/
@@ -49,8 +50,8 @@ export default function Articulos() {
   /*funcion que calcula el precio de
     articulo por su cantidad*/
   useEffect(() => {
-    const precioConDescuento = precioArticulo - (precioArticulo * (descuento / 100));
-    setTotal(precioConDescuento * cantidad); // Calcular el total
+    const precioConDescuento = precioArticulo - ((precioArticulo * descuento) / 100);
+    setTotal(precioConDescuento * cantidad);
   }, [cantidad, precioArticulo, descuento]);
 
 
@@ -164,7 +165,7 @@ export default function Articulos() {
     setNotas("");
     setCantidad(1);
     setDescuento(0);
-    setPrecioArticulo(10);
+    setPrecioArticulo("");
   };
 
 
@@ -272,13 +273,13 @@ export default function Articulos() {
 
           <div className={styles.div_cargando}>
             <p className={styles.cargando}><FaSpinner /></p>
-            <p>Cargando articulos...</p>
+            <p>Cargando artículos...</p>
           </div>
 
         ) : (
 
           <>
-            <h3>{searchTerm ? `Resultados de busqueda para: ${searchTerm}` : "Articulos"}</h3>
+            <h3>{searchTerm ? `Resultados de búsqueda para: ${searchTerm}` : "Artículos"}</h3>
             <div className={`${"alerta"} ${alerta && "mostrar"}`}>
               Agregado <span><BiLike /></span>
             </div>
@@ -299,7 +300,10 @@ export default function Articulos() {
                   </div>
                 </div>
                 <div className={styles.ordenar}>
-                  <p onClick={() => setOrdenarPor(prev => !prev)}>Ordenar por </p>
+                  <div onClick={() => setOrdenarPor(prev => !prev)} className={styles.div_ordenar}>
+                    <p>Ordenar por</p>
+                    <p className={styles.arrow}><MdOutlineKeyboardArrowDown/></p>
+                  </div>
                   <div ref={ordenarRef} className={`ordenar_container ${ordenarPor ? "mostrar_ordenar" : ""}`}>
                     {
                       ordenarPor && (
@@ -325,9 +329,15 @@ export default function Articulos() {
                           <img className={view.grid ? "producto_imagen" : "producto_imagen_row"} src={cargarImagen(articulo)} alt="imagen" />
                         </div>
                         <div className={styles.div_info}>
-                          <p className={`producto_precio`}>{mostrarPrecio && `Precio: $${articulo.preciolista}`}</p>
-                          <p className={`producto_descuento`}>{mostrarPrecio && `Descuento: ${descuento} %`}</p>
-                          <button onClick={(e) => {
+                          {
+                            mostrarPrecio && (
+                              <>
+                                <p className={`producto_precio`}>{`Precio: $${articulo.preciolista}`}</p>
+                                <p className={`producto_descuento`}>{`Descuento: ${descuento} %`}</p>
+                              </>
+                            )
+                          }
+                          <button className='producto_boton' onClick={(e) => {
                             e.stopPropagation();
                             //handleAgregarArticulos(articulo);
                             setModal(true);
